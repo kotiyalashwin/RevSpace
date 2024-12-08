@@ -12,6 +12,8 @@ import SpaceBox from "./SpaceBox";
 import { useState } from "react";
 import Input from "./Input";
 import DynamicInputCards from "./DynamicInputCards";
+import YesNoSlider from "./YesNoSlider";
+import Preview from "./MainBox/Preview";
 
 function MainContent() {
   const [isOpen, setIsOpen] = useState(false);
@@ -100,7 +102,7 @@ const SpaceForm = ({ setIsOpen }: SpaceFormProps) => {
 
           <div className="flex flex-col  h-full items-center space-y-4 md:space-x-4 md:flex-row w-full justify-around ">
             {/* preview */}
-            <div className="w-full md:w-[70%] h-full md:min-h-[60vh] bg-white p-2 flex flex-col  items-center justify-evenly md:justify-normal rounded-lg">
+            {/* <div className="w-full md:w-[70%] h-full md:min-h-[60vh] bg-white p-2 flex flex-col  items-center justify-evenly md:justify-normal rounded-lg">
               <div className="text-cyan-800">
                 <UserCircle size={60} />
               </div>
@@ -158,7 +160,16 @@ const SpaceForm = ({ setIsOpen }: SpaceFormProps) => {
               )}
 
               <p className="text-neutral-400">Testimonials by RevSpace</p>
-            </div>
+            </div> */}
+            <Preview
+              preview={preview}
+              wantImage={wantImage}
+              cards={cards}
+              valueVideo={valueVideo}
+              valueText={valueText}
+              header={header}
+              message={message}
+            />
 
             {/* form */}
             <div className="bg-white w-full rounded-lg  flex flex-col justify-center p-4">
@@ -244,39 +255,4 @@ const SpaceForm = ({ setIsOpen }: SpaceFormProps) => {
   );
 };
 
-type YesNoSliderProps = {
-  setValue: React.Dispatch<React.SetStateAction<boolean>>;
-  value: boolean;
-};
-
-const YesNoSlider = ({ setValue, value }: YesNoSliderProps) => {
-  // Default to "No"
-
-  const handleToggle = () => {
-    setValue((s) => !s);
-  };
-
-  return (
-    <div className="flex items-center space-x-4 p-4">
-      <span className={`text-md ${!value ? "text-blue-600" : "text-gray-400"}`}>
-        No
-      </span>
-      <div
-        className={`w-9 h-6 flex items-center rounded-full p-1 cursor-pointer ${
-          value ? "bg-green-500" : "bg-red-500"
-        }`}
-        onClick={handleToggle}
-      >
-        <div
-          className={`w-4 h-4 bg-white rounded-full shadow-md transform duration-300 ${
-            value ? "translate-x-4" : ""
-          }`}
-        />
-      </div>
-      <span className={`text-md ${value ? "text-green-600" : "text-gray-400"}`}>
-        Yes
-      </span>
-    </div>
-  );
-};
 export default MainContent;
