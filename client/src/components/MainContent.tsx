@@ -1,19 +1,13 @@
-import {
-  BellRing,
-  CircleUserRound,
-  GripHorizontal,
-  Pencil,
-  UserCircle,
-  Video,
-} from "lucide-react";
+import { BellRing, CircleUserRound } from "lucide-react";
 
 import StatBox from "./StatBox";
 import SpaceBox from "./SpaceBox";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import Input from "./Input";
 import DynamicInputCards from "./DynamicInputCards";
 import YesNoSlider from "./YesNoSlider";
 import Preview from "./MainBox/Preview";
+import { useNavigate } from "react-router-dom";
 
 function MainContent() {
   const [isOpen, setIsOpen] = useState(false);
@@ -52,13 +46,31 @@ const SpaceForm = ({ setIsOpen }: SpaceFormProps) => {
   const [preview, setPreview] = useState<string | null>(null); // State to store the preview URL
   const [wantImage, setWantImage] = useState(false);
 
-  const handleImageUpload = (e) => {
+  const navigate = useNavigate();
+
+  const handleCreateSpace = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    localStorage.setItem("header", header);
+    localStorage.setItem("message", message);
+    localStorage.setItem("spaceName", spaceName);
+    localStorage.setItem("valueVideo", JSON.stringify(valueVideo)); //JSON.parse to convert to boolean
+    localStorage.setItem("valueText", JSON.stringify(valueText));
+    localStorage.setItem("cards", JSON.stringify(cards));
+    localStorage.setItem("wantImage", JSON.stringify(wantImage));
+
+    navigate("/testimonial");
+  };
+
+  const handleImageUpload = (e: any) => {
     const file = e.target.files[0]; // Get the first selected file
 
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setPreview(reader.result as string); // Set the preview in state
+        const base64Image = reader.result as string;
+        setPreview(base64Image); // Set the preview in state
+        localStorage.setItem("uploadedImage", base64Image);
       };
       reader.readAsDataURL(file); // Read the file as a data URL
     }
@@ -101,66 +113,6 @@ const SpaceForm = ({ setIsOpen }: SpaceFormProps) => {
           </button>
 
           <div className="flex flex-col  h-full items-center space-y-4 md:space-x-4 md:flex-row w-full justify-around ">
-            {/* preview */}
-            {/* <div className="w-full md:w-[70%] h-full md:min-h-[60vh] bg-white p-2 flex flex-col  items-center justify-evenly md:justify-normal rounded-lg">
-              <div className="text-cyan-800">
-                <UserCircle size={60} />
-              </div>
-              <header className="text-center w-full">
-                <h1 className="text-4xl lg:text-6xl text-neutral-600 font-bold mb-2">
-                  {header}
-                </h1>
-                <p className="text-sm lg:text-xl text-neutral-500">{message}</p>
-              </header>
-
-              {preview && wantImage && (
-                <div style={{ marginTop: "20px" }}>
-                  <img
-                    src={preview}
-                    alt="Uploaded Preview"
-                    style={{
-                      width: "300px",
-                      height: "200px",
-                      border: "1px solid #ccc",
-                      borderRadius: "8px",
-                    }}
-                  />
-                </div>
-              )}
-
-              {cards.length === 0 ? null : (
-                <div className="p-4 w-full">
-                  <header className="text-neutral-600 font-semibold">
-                    Try to Answer these Question:-
-                  </header>
-                  <div className="bg-gray-200 p-4">
-                    {cards.map((card, i) => {
-                      const letter = String.fromCharCode(97 + i);
-                      return (
-                        <p key={i} className="text-lg p-2 text-slate-800">
-                          {`${letter}) `}
-                          {card}
-                        </p>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-              {valueVideo && (
-                <button className="bg-blue-600 flex text-white px-2 py-4 rounded-md m-4">
-                  <Video />
-                  <span className="ml-4">Record Video Testiomonial</span>
-                </button>
-              )}
-              {valueText && (
-                <button className="bg-slate-900 flex text-white px-2 py-4 rounded-md m-4">
-                  <Pencil />
-                  <span className="ml-4">Write Your Review</span>
-                </button>
-              )}
-
-              <p className="text-neutral-400">Testimonials by RevSpace</p>
-            </div> */}
             <Preview
               preview={preview}
               wantImage={wantImage}
@@ -182,7 +134,7 @@ const SpaceForm = ({ setIsOpen }: SpaceFormProps) => {
                 </p>
               </header>
 
-              <form className="p-8">
+              <form className="p-8" onSubmit={handleCreateSpace}>
                 <Input
                   label="Space Name"
                   placeholder=""
@@ -230,24 +182,24 @@ const SpaceForm = ({ setIsOpen }: SpaceFormProps) => {
                     <YesNoSlider setValue={setValueText} value={valueText} />
                   </div>
                 </div>
+                <div className="mt-6 flex justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsOpen(false)}
+                    className="px-4 py-2 text-sm  font-medium text-white  bg-black/30 hover:bg-black rounded-md focus:outline-none "
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="px-4 py-2 text-sm font-medium text-white bg-[#01A8A4] border border-transparent rounded-md hover:bg-[#00837F] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  >
+                    Create Space
+                  </button>
+                </div>
               </form>
             </div>
-          </div>
-          <div className="mt-6 flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={() => setIsOpen(false)}
-              className="px-4 py-2 text-sm  font-medium text-white  bg-black/30 hover:bg-black rounded-md focus:outline-none "
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-[#01A8A4] border border-transparent rounded-md hover:bg-[#00837F] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Create Space
-            </button>
           </div>
         </div>
       </div>

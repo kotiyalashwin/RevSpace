@@ -1,6 +1,18 @@
 // UseState: preview,wantImage,card,valueVideo,Valuetext
 
 import { Pencil, UserCircle, Video } from "lucide-react";
+import { useState } from "react";
+import VideoRecorder from "../VideoRecorder";
+
+type PreviewProps = {
+  preview: string | null;
+  wantImage: boolean;
+  cards: string[];
+  valueVideo: boolean;
+  valueText: boolean;
+  header: string;
+  message: string;
+};
 
 function Preview({
   preview,
@@ -10,7 +22,8 @@ function Preview({
   valueText,
   header,
   message,
-}) {
+}: PreviewProps) {
+  const [wantRecord, setWantRecord] = useState(false);
   return (
     <div className="w-full md:w-[70%] h-full md:min-h-[60vh] bg-white p-2 flex flex-col  items-center justify-evenly md:justify-normal rounded-lg">
       <div className="text-cyan-800">
@@ -57,11 +70,15 @@ function Preview({
         </div>
       )}
       {valueVideo && (
-        <button className="bg-blue-600 flex text-white px-2 py-4 rounded-md m-4">
+        <button
+          className="bg-blue-600 flex text-white px-2 py-4 rounded-md m-4"
+          onClick={() => setWantRecord(true)}
+        >
           <Video />
           <span className="ml-4">Record Video Testiomonial</span>
         </button>
       )}
+      {wantRecord && <VideoRecorder />}
       {valueText && (
         <button className="bg-slate-900 flex text-white px-2 py-4 rounded-md m-4">
           <Pencil />
