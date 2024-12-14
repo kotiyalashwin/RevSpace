@@ -54,7 +54,6 @@ const VideoRecorder: React.FC = () => {
 
   return (
     <div className="video-recorder">
-      <h2>Video Recorder</h2>
       <div style={{ marginBottom: "20px" }}>
         <button
           onClick={isRecording ? handleStopRecording : handleStartRecording}

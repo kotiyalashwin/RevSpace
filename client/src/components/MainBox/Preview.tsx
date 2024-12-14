@@ -3,6 +3,7 @@
 import { Pencil, UserCircle, Video } from "lucide-react";
 import { useState } from "react";
 import VideoRecorder from "../VideoRecorder";
+import { useNavigate } from "react-router-dom";
 
 type PreviewProps = {
   preview: string | null;
@@ -23,6 +24,12 @@ function Preview({
   header,
   message,
 }: PreviewProps) {
+  const navigate = useNavigate();
+
+  function handleReset() {
+    navigate("/testimonial");
+  }
+
   const [wantRecord, setWantRecord] = useState(false);
   return (
     <div className="w-full md:w-[70%] h-full md:min-h-[60vh] bg-white p-2 flex flex-col  items-center justify-evenly md:justify-normal rounded-lg">
@@ -69,7 +76,7 @@ function Preview({
           </div>
         </div>
       )}
-      {valueVideo && (
+      {valueVideo && !wantRecord && (
         <button
           className="bg-blue-600 flex text-white px-2 py-4 rounded-md m-4"
           onClick={() => setWantRecord(true)}
@@ -85,6 +92,13 @@ function Preview({
           <span className="ml-4">Write Your Review</span>
         </button>
       )}
+
+      <button
+        className="bg-black px-2 py-4 w-1/2 text-[20px] text-white"
+        onClick={handleReset}
+      >
+        Reset
+      </button>
 
       <p className="text-neutral-400">Testimonials by RevSpace</p>
     </div>
