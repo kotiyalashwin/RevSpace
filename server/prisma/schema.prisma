@@ -17,6 +17,7 @@ datasource db {
 model Space {
   id Int @id @default(autoincrement())
   spacename String 
+  description String
   link      String @unique //no 2 spaces will have same link
   metadata   SpaceMetadata? 
 }
@@ -25,6 +26,5 @@ model SpaceMetadata {
   id Int @unique @default(autoincrement())
   spaceId Int @unique
   space Space @relation(fields: [spaceId], references: [id])
-  formfields Json
-  Questions Json
+  formfields Json  //will include array of questions
 }
