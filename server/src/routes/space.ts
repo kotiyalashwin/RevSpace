@@ -1,5 +1,4 @@
 import express from "express";
-import prisma from "../config";
 import { newSpace, spaceDetails } from "../controller/space";
 
 const router = express.Router();

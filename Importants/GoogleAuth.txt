@@ -1,0 +1,8 @@
+Frontend:- 
+ 1. Create Project and get credentials from GoogleCloud 
+ 2. npm i  @react-oauth/google
+ 
+
+TIP: if user goes to any undefined path then you must create a custom page which tells user that that page in not available
+
+--> <Route path="*" element={<NotFound/>} />

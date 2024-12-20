@@ -1,4 +1,4 @@
-import { Request, response, Response } from "express";
+import { Request, Response } from "express";
 import { newSpaceSchema } from "../validation";
 import prisma from "../config";
 import { v4 as uuidv4 } from "uuid";
@@ -19,6 +19,7 @@ export const newSpace = async (req: Request, res: Response) => {
     try {
       const response = await prisma.space.create({
         data: {
+          userId: "user",
           spacename: spaceName,
           description: description,
           link: link,

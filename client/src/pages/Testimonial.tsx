@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Preview from "../components/MainBox/Preview";
+import Preview from "../components/Dashboard/MainBox/Preview";
 
 function Testimonial() {
   const [header, setHeader] = useState<string>("");
