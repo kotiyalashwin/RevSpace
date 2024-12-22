@@ -1,4 +1,4 @@
-import { newUser } from "../validation";
+import { loginUser, newUser } from "../validation";
 import bcrypt from "bcrypt";
 import prisma from "../config";
 import { Request, Response } from "express";
@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 
 export const userSignup = async (req: Request, res: Response) => {
   try {
+    console.log(req.body);
     const { success } = newUser.safeParse(req.body);
 
     if (!success) {
@@ -26,7 +27,7 @@ export const userSignup = async (req: Request, res: Response) => {
         password: hashedPassword,
       },
       select: {
-        id: true,
+        email: true,
       },
     });
 
@@ -40,9 +41,56 @@ export const userSignup = async (req: Request, res: Response) => {
       sameSite: "none",
     });
 
-    res.json(`Welcome to RevSpace ${name}`);
+    res.json({ message: `Welcome to RevSpace ${name}`, success: true });
   } catch (err) {
-    console.error("Error Occurred : ", err);
+    res.json({ error: `${err}`, success: false });
+    // console.error("Error Occurred : ", err);
+  }
+};
+
+export const userSignin = async (req: Request, res: Response) => {
+  try {
+    const { success } = loginUser.safeParse(req.body);
+
+    if (!success) {
+      throw new Error("Invalid Inputs");
+    }
+
+    const { email, password } = req.body;
+
+    const exist = await prisma.user.findFirst({
+      where: {
+        email,
+      },
+    });
+
+    if (!exist) {
+      throw new Error("Invalid Credentials");
+    }
+
+    const decodedPassword = await bcrypt.compare(password, exist.password);
+
+    if (!decodedPassword) {
+      throw new Error("Invaid Credentials");
+    }
+
+    const token = jwt.sign(
+      { user: exist.email },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    res.cookie("authCode", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
+    res.json({ success: true, message: `Welcome back ${exist.name}` });
+  } catch (err) {
+    res.json({ error: `${err}`, success: false });
   }
 };
 

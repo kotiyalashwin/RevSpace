@@ -14,12 +14,12 @@ function MainContent() {
   return (
     <div className="ml-44 md:ml-72">
       <header className="h-16 flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-white">Welcome back, User!</h1>
+        <h1 className="text-2xl font-bold text-black">Welcome back, User!</h1>
         <div className="flex items-center space-x-4">
-          <button className="p-2 rounded-lg  text-white hover:bg-black/30 transition-all ease-in">
+          <button className="p-2 rounded-lg  text-black hover:bg-black hover:text-white transition-all ease-in">
             <BellRing />
           </button>
-          <div className="w-10 h-10 rounded-full hover:bg-black/30 transition-all ease-in flex items-center justify-center text-white">
+          <div className="w-10 h-10 rounded-full text-black hover:bg-black transition-all ease-in flex items-center justify-center">
             <CircleUserRound />
           </div>
         </div>

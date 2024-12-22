@@ -19,6 +19,12 @@ export const newSpaceSchema = zod.object({
 });
 
 export const newUser = zod.object({
-  email: zod.string().email(),
+  name: zod.string(),
+  email: zod.string(),
+  password: zod.string(),
+});
+
+export const loginUser = zod.object({
+  email: zod.string(),
   password: zod.string(),
 });

@@ -7,22 +7,20 @@ type SpaceBoxProps = {
 function SpaceBox({ setIsOpen }: SpaceBoxProps) {
   return (
     <div
-      className="rounded-xl p-6 mt-4 max-w-[80%]"
+      className="rounded-xl p-6 mt-4 max-w-[80%] bg-white border-2"
       style={{
-        backgroundColor: "rgba(95, 72, 162, 0.15)",
         backdropFilter: "blur(12px)",
-        border: "1px solid rgba(1, 168, 164, 0.1)",
       }}
     >
       <header className="flex justify-between ">
-        <h2 className="text-lg md:text-3xl font-semibold text-white mb-4">
+        <h2 className="text-lg md:text-3xl font-semibold text-black mb-4">
           Spaces
         </h2>
-        <button className="text-white mb-4" onClick={() => setIsOpen(true)}>
+        <button className="text-black mb-4" onClick={() => setIsOpen(true)}>
           <BookPlus size={28} />
         </button>
       </header>
-      <div className="h-40 md:text-md flex items-center justify-center text-white/60">
+      <div className="h-40 md:text-md flex items-center justify-center text-black/60">
         No Spaces Created
       </div>
     </div>
