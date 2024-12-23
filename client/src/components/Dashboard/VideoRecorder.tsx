@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 
-const VideoRecorder: React.FC = () => {
+const VideoRecorder: React.FC = ({ setVideoBlob }: any) => {
   const [isRecording, setIsRecording] = useState(false); // State to track recording status
   const [videoURL, setVideoURL] = useState<string | null>(null); // State to store the recorded video URL
   const mediaRecorderRef = useRef<MediaRecorder | null>(null); // Ref to hold the MediaRecorder instance
@@ -30,6 +30,8 @@ const VideoRecorder: React.FC = () => {
       // Create a video URL after recording stops
       mediaRecorder.onstop = () => {
         const videoBlob = new Blob(chunks, { type: "video/webm" });
+        setVideoBlob(videoBlob);
+
         const videoURL = URL.createObjectURL(videoBlob);
         setVideoURL(videoURL);
       };

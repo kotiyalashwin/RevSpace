@@ -1,4 +1,8 @@
-function StatBox() {
+type props = {
+  spaces: [];
+};
+
+function StatBox({ spaces }: props) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Statistics Card */}
@@ -15,7 +19,7 @@ function StatBox() {
         <div className="space-y-4 md:text-md">
           <div className="flex justify-between text-black/80">
             <span>Total Spaces</span>
-            <span>0</span>
+            <span>{spaces.length}</span>
           </div>
           <div className="flex justify-between text-black/80">
             <span>Total Testimonials</span>

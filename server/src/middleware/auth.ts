@@ -1,22 +1,41 @@
 import { NextFunction, Request, Response } from "express";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import prisma from "../config";
-import jwt from "jsonwebtoken";
+
+export interface authReq extends Request {
+  user?: string;
+}
 
 const authMiddleware = async (
-  req: Request,
+  req: authReq,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const authToken = req.cookies.authCode;
     if (!authToken) {
-      res.status(403).json({ error: "Not authenticated", success: false });
+      res.json({ error: "Not authenticated", success: false });
+      return;
     }
 
-    const decoded = jwt.verify(authToken, process.env.JWT_SECRET as string);
-    console.log(decoded);
+    const decoded = jwt.verify(
+      authToken,
+      process.env.JWT_SECRET as string
+    ) as JwtPayload;
 
-    // next();
+    const valid = await prisma.user.findFirst({
+      where: {
+        email: decoded.user,
+      },
+    });
+
+    if (!valid) {
+      res.json({ error: "Not Authenticated", success: false });
+      return;
+    }
+    req.user = decoded.user;
+
+    next();
   } catch {}
 };
 

@@ -16,8 +16,6 @@ type PreviewProps = {
 };
 
 function Preview({
-  preview,
-  wantImage,
   cards,
   valueVideo,
   valueText,
@@ -29,8 +27,6 @@ function Preview({
   function handleReset() {
     navigate("/testimonial");
   }
-
-  const [wantRecord, setWantRecord] = useState(false);
   return (
     <div className="w-full md:w-[70%] h-full md:min-h-[60vh] bg-white p-2 flex flex-col  items-center justify-evenly md:justify-normal rounded-lg">
       <div className="text-cyan-800">
@@ -43,7 +39,7 @@ function Preview({
         <p className="text-sm lg:text-xl text-neutral-500">{message}</p>
       </header>
 
-      {preview && wantImage && (
+      {/* {preview && wantImage && (
         <div style={{ marginTop: "20px" }}>
           <img
             src={preview}
@@ -56,7 +52,7 @@ function Preview({
             }}
           />
         </div>
-      )}
+      )} */}
 
       {cards.length === 0 ? null : (
         <div className="p-4 w-full">
@@ -76,16 +72,13 @@ function Preview({
           </div>
         </div>
       )}
-      {valueVideo && !wantRecord && (
-        <button
-          className="bg-blue-600 flex text-white px-2 py-4 rounded-md m-4"
-          onClick={() => setWantRecord(true)}
-        >
+      {valueVideo && (
+        <button className="bg-blue-600 flex text-white px-2 py-4 rounded-md m-4">
           <Video />
           <span className="ml-4">Record Video Testiomonial</span>
         </button>
       )}
-      {wantRecord && <VideoRecorder />}
+      {/* {wantRecord && <VideoRecorder />} */}
       {valueText && (
         <button className="bg-slate-900 flex text-white px-2 py-4 rounded-md m-4">
           <Pencil />

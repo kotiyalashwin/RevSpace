@@ -19,7 +19,7 @@ model User {
 model Space {
   id Int @id @default(autoincrement())
   userId String 
-  user    User     @relation(fields: [userId] , references: [id])
+  user    User     @relation(fields: [userId] , references: [email])
   spacename String 
   description String
   link      String @unique //no 2 spaces will have same link
@@ -37,9 +37,9 @@ model SpaceMetadata {
 
 model Testimonial{
   id  String @id @default(uuid())
-  spaceId Int
-  space Space @relation(fields: [spaceId], references: [id])
+  spaceId String
+  space Space @relation(fields: [spaceId], references: [link])
   email  String 
   v_url String
-  text Json
+  // text Json
 }

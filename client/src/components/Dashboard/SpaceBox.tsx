@@ -1,10 +1,20 @@
 import { BookPlus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type SpaceBoxProps = {
   setIsOpen: (v: boolean) => void;
+  spaces: spaces[];
 };
 
-function SpaceBox({ setIsOpen }: SpaceBoxProps) {
+type spaces = {
+  spacename: string;
+  description: string;
+  link: string;
+};
+
+function SpaceBox({ setIsOpen, spaces }: SpaceBoxProps) {
+  const navigate = useNavigate();
+
   return (
     <div
       className="rounded-xl p-6 mt-4 max-w-[80%] bg-white border-2"
@@ -13,20 +23,57 @@ function SpaceBox({ setIsOpen }: SpaceBoxProps) {
       }}
     >
       <header className="flex justify-between ">
-        <h2 className="text-lg md:text-3xl font-semibold text-black mb-4">
+        <h2 className="text-xl md:text-5xl font-semibold text-black mb-4">
           Spaces
         </h2>
         <button className="text-black mb-4" onClick={() => setIsOpen(true)}>
           <BookPlus size={28} />
         </button>
       </header>
-      <div className="h-40 md:text-md flex items-center justify-center text-black/60">
-        No Spaces Created
+
+      <div className="flex ">
+        {spaces && spaces.length > 0 ? (
+          spaces?.map((space) => {
+            return (
+              <SpaceCard
+                navigate={navigate}
+                spacename={space.spacename}
+                description={space.description}
+                link={space.link}
+              />
+            );
+          })
+        ) : (
+          <div className="w-full text-neutral-500 flex text-xl text-center items-center justify-center">
+            No Spaces Found.Create One
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
+interface spaceCardProps extends spaces {
+  navigate: (path: string) => void;
+}
+
+const SpaceCard = ({
+  spacename,
+  description,
+  link,
+  navigate,
+}: spaceCardProps) => (
+  <div className="bg-white rounded-lg shadow-md p-4 m-2 w-64 border-2">
+    <h2 className="text-xl font-bold mb-2">{spacename}</h2>
+    {description && <p className="text-gray-600 mb-4">{description}</p>}
+    <button
+      onClick={() => navigate(`/testimonial/${link}`)}
+      className="bg-black  text-white font-bold py-2 px-4 rounded"
+    >
+      View Form
+    </button>
+  </div>
+);
 {
   /* Form
           <form  className="space-y-4">

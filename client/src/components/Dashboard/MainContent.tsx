@@ -2,15 +2,50 @@ import { BellRing, CircleUserRound } from "lucide-react";
 
 import StatBox from "./StatBox";
 import SpaceBox from "./SpaceBox";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Input from "./Input";
 import DynamicInputCards from "./DynamicInputCards";
 import YesNoSlider from "./YesNoSlider";
 import Preview from "./MainBox/Preview";
+import axios from "axios";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 function MainContent() {
+  const navigate = useNavigate();
+  type respone = {
+    success: true;
+    spaces: [];
+    error?: string;
+  };
   const [isOpen, setIsOpen] = useState(false);
+  const [spaces, setSpaces] = useState([]);
+  const getSpaces = async () => {
+    try {
+      const response = await axios.get<respone>(
+        "http://localhost:3000/api/v1/space/spaces",
+        {
+          withCredentials: true,
+        }
+      );
+
+      const data = await response.data;
+
+      if (data.success) {
+        setSpaces(data.spaces);
+        console.log(data.spaces);
+      } else {
+        toast.error("Unable to fetch Spaces");
+      }
+    } catch {
+      toast.error("Unable to fetch Spaces");
+    }
+  };
+
+  useEffect(() => {
+    getSpaces();
+    console.log(spaces);
+  }, []);
   return (
     <div className="ml-44 md:ml-72">
       <header className="h-16 flex items-center justify-between mb-8">
@@ -23,10 +58,13 @@ function MainContent() {
             <CircleUserRound />
           </div>
         </div>
+
+        <button onClick={() => navigate("/testimonials")}>testimonial</button>
       </header>
 
-      <StatBox />
-      <SpaceBox setIsOpen={setIsOpen} />
+      {/* @ts-ignore */}
+      <StatBox spaces={spaces} />
+      <SpaceBox spaces={spaces} setIsOpen={setIsOpen} />
       {isOpen && <SpaceForm setIsOpen={setIsOpen} />}
     </div>
   );
@@ -46,20 +84,40 @@ const SpaceForm = ({ setIsOpen }: SpaceFormProps) => {
   const [preview, setPreview] = useState<string | null>(null); // State to store the preview URL
   const [wantImage, setWantImage] = useState(false);
 
-  const navigate = useNavigate();
-
-  const handleCreateSpace = (e: FormEvent<HTMLFormElement>) => {
+  const handleCreateSpace = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const body = {
+      spaceName: spaceName,
+      description: message,
+      spaceMetadata: {
+        formFields: {
+          header: header,
+          message: message,
+          wantVideo: valueVideo,
+          wantText: valueText,
+          questions: cards,
+        },
+      },
+    };
 
-    localStorage.setItem("header", header);
-    localStorage.setItem("message", message);
-    localStorage.setItem("spaceName", spaceName);
-    localStorage.setItem("valueVideo", JSON.stringify(valueVideo)); //JSON.parse to convert to boolean
-    localStorage.setItem("valueText", JSON.stringify(valueText));
-    localStorage.setItem("cards", JSON.stringify(cards));
-    localStorage.setItem("wantImage", JSON.stringify(wantImage));
+    const respone = await axios.post(
+      "http://localhost:3000/api/v1/space/newspace",
+      body,
+      {
+        withCredentials: true,
+      }
+    );
 
-    navigate("/testimonial");
+    // @ts-ignore
+    const data = await respone.data;
+    // @ts-ignore
+    if (data.success) {
+      // @ts-ignore
+      toast.success(`${data.message}`);
+    } else {
+      // @ts-ignore
+      toast.error(`${data.error}`);
+    }
   };
 
   const handleImageUpload = (e: any) => {
