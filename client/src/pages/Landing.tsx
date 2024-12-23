@@ -12,7 +12,7 @@ function Landing() {
   const homeRef = useRef<HTMLDivElement>(null);
   const productRef = useRef(null);
   const pricingRef = useRef(null);
-
+  const { scrollY } = useScroll();
   const scrollToSection = (sectionRef: any) => {
     sectionRef.current.scrollIntoView({ behavior: "smooth" });
   };
@@ -20,8 +20,8 @@ function Landing() {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-[#f1f1f1]  font-default flex flex-col justify-evenly ">
-      <header className=" sticky top-0   backdrop-blur-sm border-b-2  border-slate-500 flex justify-between items-center p-2 transition-all duration-75 ease-in-out z-50">
+    <motion.div className=" bg-[#f1f1f1] font-default flex flex-col justify-evenly ">
+      <motion.header className=" sticky top-0   backdrop-blur-sm border-b-2  border-slate-500 flex justify-between items-center p-2 transition-all duration-75 ease-in-out z-50">
         <div className="border-r-2 border-slate-500 flex items-center justify-center w-[20%] p-2 tracking-wide text-2xl">
           <img src="logo.png" alt="" className="w-[5rem] h-[5rem]" />
           <p>RevSpace</p>
@@ -57,7 +57,7 @@ function Landing() {
             SignUp
           </button>
         </div>
-      </header>
+      </motion.header>
       <Section1 ref={homeRef} />
 
       <Section2 ref={productRef} />
@@ -67,7 +67,7 @@ function Landing() {
       </section>
 
       <Footer />
-    </div>
+    </motion.div>
   );
 }
 

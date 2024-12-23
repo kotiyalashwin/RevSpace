@@ -1,5 +1,6 @@
 import { BookPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import * as motion from "motion/react-client";
 
 type SpaceBoxProps = {
   setIsOpen: (v: boolean) => void;
@@ -12,11 +13,25 @@ type spaces = {
   link: string;
 };
 
+const variants = {
+  hidden: {
+    opacity: 0,
+  },
+
+  visible: {
+    opacity: 100,
+  },
+};
+
 function SpaceBox({ setIsOpen, spaces }: SpaceBoxProps) {
   const navigate = useNavigate();
 
   return (
-    <div
+    <motion.div
+      variants={variants}
+      initial="hidden"
+      animate="visible"
+      transition={{ duration: 1, ease: "easeIn" }}
       className="rounded-xl p-6 mt-4 max-w-[80%] bg-white border-2"
       style={{
         backdropFilter: "blur(12px)",
@@ -49,7 +64,7 @@ function SpaceBox({ setIsOpen, spaces }: SpaceBoxProps) {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
 

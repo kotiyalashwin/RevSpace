@@ -2,11 +2,25 @@ import React, { forwardRef } from "react";
 import * as motion from "motion/react-client";
 import { AnimatedDottedLine } from "./AnimatedDottedLine";
 import { SectionProps } from "./Section1";
-import { useScroll, useTransform } from "framer-motion";
+import {
+  useMotionValue,
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 
 const Section2 = forwardRef<HTMLDivElement, SectionProps>((props, ref) => {
   const { scrollY } = useScroll();
-  const opacity = useTransform(scrollY, [0, 1000], [0, 1]);
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    // console.log(latest);
+  });
+
+  const scale = useTransform(scrollY, [0, 1300], [1, 1.5]);
+  const x1 = useTransform(scrollY, [0, 1300], [0, 250]);
+  const x2 = useTransform(scrollY, [0, 1500], [0, -250]);
+  const x3 = useTransform(scrollY, [0, 1700], [0, 250]);
+  console.log(scrollY);
+
   return (
     <section
       ref={ref}
@@ -33,9 +47,9 @@ const Section2 = forwardRef<HTMLDivElement, SectionProps>((props, ref) => {
             {/* @ts-ignore */}
             <motion.div
               className="bg-white rounded-xl shadow-xl h-full gap-4 w-[35%] flex flex-col justify-center z-40"
-              whileHover={{ x: 100 }}
-              transition={{ duration: 3 }}
-              //   style={{ opacity }}
+              //   whileHover={{ x: 100 }}
+              transition={{ duration: 5 }}
+              style={{ x: x1 }}
             >
               <p className="text-center text-xl font-semibold">
                 Create Review Forms
@@ -55,8 +69,9 @@ const Section2 = forwardRef<HTMLDivElement, SectionProps>((props, ref) => {
             </div>
 
             <motion.div
-              whileHover={{ x: -100 }}
+              //   whileHover={{ x: -100 }}
               transition={{ duration: 3 }}
+              style={{ x: x2 }}
               className="bg-white rounded-xl shadow-xl h-full gap-4 w-[35%] flex flex-col justify-center"
             >
               <p className="text-center text-xl font-semibold">
@@ -69,8 +84,9 @@ const Section2 = forwardRef<HTMLDivElement, SectionProps>((props, ref) => {
           </div>
           <div className="flex p-4 items-center justify-center ">
             <motion.div
-              whileHover={{ x: 100 }}
+              //   whileHover={{ x: 100 }}
               transition={{ duration: 3 }}
+              style={{ x: x3 }}
               className="bg-white rounded-xl shadow-xl h-full gap-4 w-[35%] flex flex-col justify-center z-40"
             >
               <p className="text-center text-xl font-semibold">

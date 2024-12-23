@@ -1,3 +1,4 @@
+import { useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import * as motion from "motion/react-client";
 import { forwardRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +7,12 @@ export type SectionProps = React.HTMLAttributes<HTMLElement>;
 
 const Section1 = forwardRef<HTMLDivElement, SectionProps>((props, ref) => {
   const navigate = useNavigate();
+  const { scrollY } = useScroll();
+  useMotionValueEvent(scrollY, "change", (l) => {
+    // console.log(l);
+  });
+
+  const scale = useTransform(scrollY, [450, 700], [1, 1.5]);
 
   return (
     <section
@@ -55,7 +62,10 @@ const Section1 = forwardRef<HTMLDivElement, SectionProps>((props, ref) => {
             </motion.div>
           </div>
         </div>
-        <div className="border-t-4 border-black/50 h-[20px] w-[75%] mt-6"></div>
+        <motion.div
+          style={{ scale: scale }}
+          className="border-t-4 border-black/50 h-[20px] w-[75%] mt-6"
+        ></motion.div>
       </div>
     </section>
   );

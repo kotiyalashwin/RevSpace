@@ -1,10 +1,28 @@
+import * as motion from "motion/react-client";
+
 type props = {
   spaces: [];
 };
 
+const variants = {
+  hidden: {
+    opacity: 0,
+  },
+
+  visible: {
+    opacity: 100,
+  },
+};
+
 function StatBox({ spaces }: props) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <motion.div
+      variants={variants}
+      initial="hidden"
+      animate="visible"
+      transition={{ duration: 1, ease: "easeIn" }}
+      className="grid grid-cols-1 md:grid-cols-2 gap-6"
+    >
       {/* Statistics Card */}
       <div
         className="rounded-xl p-6 border-2"
@@ -27,7 +45,7 @@ function StatBox({ spaces }: props) {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

@@ -2,6 +2,7 @@ import axios from "axios";
 import { LogOut } from "lucide-react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import * as motion from "motion/react-client";
 
 function Sidebar() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ function Sidebar() {
     navigate("/");
   };
   return (
-    <div
+    <motion.div
       className="h-screen w-32 md:w-60 fixed left-0 border-r-2 border-black  top-0  transition-all ease-in rounded-sm  "
       //   style={{
       //     backdropFilter: "blur(12px)",
@@ -54,7 +55,7 @@ function Sidebar() {
           </button>
         </nav>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
