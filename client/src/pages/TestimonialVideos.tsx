@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { data } from "react-router-dom";
 
 type Testimonial = {
   id: string;
@@ -24,7 +25,7 @@ export default function TestimonialVideos() {
 
     const data = await response.data;
 
-    setTestimonials(data[0].spaces);
+    setTestimonials(data);
   };
 
   useEffect(() => {
@@ -39,20 +40,18 @@ export default function TestimonialVideos() {
         {testimonials &&
           testimonials.map((testimonial) => (
             <div
-              key={testimonial.testimonials[0].id}
+              key={testimonial.id}
               className="bg-white text-black rounded-lg overflow-hidden shadow-lg"
             >
               <video
                 className="w-full h-48 object-cover"
-                src={testimonial.testimonials[0].v_url}
+                src={testimonial.v_url}
                 controls
               >
                 Your browser does not support the video tag.
               </video>
               <div className="p-4">
-                <h2 className="text-xl font-semibold">
-                  {testimonial.testimonials[0].email}
-                </h2>
+                <h2 className="text-xl font-semibold">{testimonial.email}</h2>
               </div>
             </div>
           ))}

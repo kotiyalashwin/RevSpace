@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export const Footer = () => {
   return (
-    <footer className="bg-gray-100 text-gray-600 py-12 px-4">
+    <footer className="bg-gray-100 text-gray-600 py-12 px-4 border-t-4 border-black">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="col-span-1 md:col-span-2">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">RevSpace</h2>

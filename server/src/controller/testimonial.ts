@@ -14,7 +14,6 @@ export const testimonialUpload = async (req: authReq, res: Response) => {
   try {
     const { link } = req.params;
     const { uploader } = req.params;
-    console.log({ link, uploader });
     const path = `Testimonials/${req.user}/${link}/${uploader}/`;
     if (!req.file) {
       res.status(400).json({ success: false, message: "No file uploaded" });
@@ -31,7 +30,6 @@ export const testimonialUpload = async (req: authReq, res: Response) => {
         }
 
         if (result) {
-          console.log(result);
           const upload = await prisma.testimonial.create({
             data: {
               email: uploader,
@@ -62,21 +60,32 @@ export const testimonialUpload = async (req: authReq, res: Response) => {
 export const testimonialDetails = async (req: authReq, res: Response) => {
   const user = req.user;
 
-  const details = await prisma.user.findMany({
-    where: { email: user },
-    select: {
-      spaces: {
-        select: {
-          testimonials: {
-            select: {
-              id: true,
-              email: true,
-              v_url: true,
-            },
-          },
-        },
+  const details = await prisma.testimonial.findMany({
+    where: {
+      space: {
+        userId: user,
       },
     },
+    select: {
+      id: true,
+      email: true,
+      v_url: true,
+    },
+
+    // where: { email: user },
+    // select: {
+    //   spaces: {
+    //     select: {
+    //       testimonials: {
+    //         select: {
+    //           id: true,
+    //           email: true,
+    //           v_url: true,
+    //         },
+    //       },
+    //     },
+    //   },
+    // },
   });
 
   res.json(details);

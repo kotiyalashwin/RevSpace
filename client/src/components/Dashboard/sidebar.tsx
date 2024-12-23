@@ -1,8 +1,25 @@
+import axios from "axios";
 import { LogOut } from "lucide-react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 function Sidebar() {
   const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    const response = await axios.post(
+      "http://localhost:3000/api/v1/user/logout",
+      null,
+      {
+        withCredentials: true,
+      }
+    );
+
+    const data = await response.data;
+    // @ts-ignore
+    toast.success(data.message);
+    navigate("/");
+  };
   return (
     <div
       className="h-screen w-32 md:w-60 fixed left-0 border-r-2 border-black  top-0  transition-all ease-in rounded-sm  "
@@ -27,7 +44,7 @@ function Sidebar() {
             Testimonials
           </button>
           <button
-            onClick={() => {}}
+            onClick={handleLogout}
             className={`flex text-xs lg:text-lg items-center space-x-3 p-3 rounded-lg transition-all hover:text-white hover:bg-black`}
           >
             LogOut

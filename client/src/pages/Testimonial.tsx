@@ -47,7 +47,7 @@ function Testimonial() {
   }, []);
 
   const [wantRecord, setWantRecord] = useState(false);
-  const [uploader, setUploader] = useState();
+  const [uploader, setUploader] = useState("");
 
   const handleSubmitTestimonial = async () => {
     const formData = new FormData();
@@ -145,6 +145,7 @@ function Testimonial() {
             <input
               placeholder="Enter your email (required)"
               className="input-base"
+              value={uploader}
               onChange={(e) => setUploader(e.target.value)}
             />
             <button className="btn-base" onClick={handleSubmitTestimonial}>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import * as motion from "motion/react-client";
 
 interface PlanProps {
   name: string;
@@ -17,7 +18,10 @@ const PlanCard: React.FC<
   const bgClasses = isHovered ? "bg-black" : "bg-white";
 
   return (
-    <div
+    <motion.div
+      initial={{ y: 200, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      transition={{ duration: 1, ease: "easeInOut" }}
       className={`${baseClasses} items-center ${bgClasses}`}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
@@ -41,7 +45,7 @@ const PlanCard: React.FC<
       >
         {name === "Free" ? "Try Now" : "Get Started"}
       </button>
-    </div>
+    </motion.div>
   );
 };
 
@@ -56,12 +60,12 @@ export const PricingPlans: React.FC = () => {
     },
     {
       name: "Starter",
-      price: "$19/mo",
+      price: "$5/mo",
       features: ["Advanced features", "50GB storage", "Priority email support"],
     },
     {
       name: "Premium",
-      price: "$49/mo",
+      price: "$10/mo",
       features: ["All features", "Unlimited storage", "24/7 phone support"],
     },
   ];
@@ -69,9 +73,14 @@ export const PricingPlans: React.FC = () => {
   return (
     <section className="py-12 px-4 md:px-8 bg-transparent">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-6xl font-bold text-center mb-12">
+        <motion.h2
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 1, ease: "easeInOut" }}
+          className="text-3xl md:text-6xl font-bold text-center mb-12"
+        >
           Choose Your Plan
-        </h2>
+        </motion.h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {plans.map((plan, index) => (
             <PlanCard

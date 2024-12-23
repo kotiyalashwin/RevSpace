@@ -44,7 +44,7 @@ function MainContent() {
 
   useEffect(() => {
     getSpaces();
-    console.log(spaces);
+    // console.log(spaces);
   }, []);
   return (
     <div className="ml-44 md:ml-72">
@@ -58,8 +58,6 @@ function MainContent() {
             <CircleUserRound />
           </div>
         </div>
-
-        <button onClick={() => navigate("/testimonials")}>testimonial</button>
       </header>
 
       {/* @ts-ignore */}
