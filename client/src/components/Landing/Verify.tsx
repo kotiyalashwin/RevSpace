@@ -13,11 +13,6 @@ type signupProps = {
   password?: string;
 };
 
-type loginProps = {
-  email?: string | null;
-  password?: string | null;
-};
-
 function Verify({ verify }: page) {
   const [formData, setFormData] = useState<signupProps>();
   const navigate = useNavigate();
@@ -39,10 +34,13 @@ function Verify({ verify }: page) {
       withCredentials: true,
     });
     const data = await respone.data;
+    // @ts-ignore
     if (data.success) {
+      // @ts-ignore
       toast.success(data.message);
       navigate("/dashboard");
     } else {
+      // @ts-ignore
       toast.error(data.error);
     }
   };

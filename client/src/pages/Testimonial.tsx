@@ -61,7 +61,7 @@ function Testimonial() {
       );
 
       const data = await response.data;
-
+      // @ts-ignore
       if (data.success) {
         toast.success(`Uploaded SUccessfully`);
       } else {
@@ -89,7 +89,7 @@ function Testimonial() {
               </p>
             </header>
 
-            {/* {preview && wantImage && (
+            {/* {preview && wPantImage && (
         <div style={{ marginTop: "20px" }}>
           <img
             src={preview}

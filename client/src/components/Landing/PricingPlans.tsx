@@ -56,17 +56,17 @@ export const PricingPlans: React.FC = () => {
     {
       name: "Free",
       price: "$0/mo",
-      features: ["2 free spaes", "Text based testimonials", "Default styling"],
+      features: ["2 free spaes", "Limited Storage", "Default styling"],
     },
     {
       name: "Starter",
       price: "$5/mo",
-      features: ["Advanced features", "50GB storage", "Priority email support"],
+      features: ["Unlimited spaces", "50GB storage", "Customizable tag"],
     },
     {
       name: "Premium",
       price: "$10/mo",
-      features: ["All features", "Unlimited storage", "24/7 phone support"],
+      features: ["All features", "Analytics", "1TB storage"],
     },
   ];
 

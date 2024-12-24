@@ -39,10 +39,6 @@ function StatBox({ spaces }: props) {
             <span>Total Spaces</span>
             <span>{spaces.length}</span>
           </div>
-          <div className="flex justify-between text-black/80">
-            <span>Total Testimonials</span>
-            <span>0</span>
-          </div>
         </div>
       </div>
     </motion.div>

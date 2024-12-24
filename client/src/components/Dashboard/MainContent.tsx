@@ -9,10 +9,8 @@ import YesNoSlider from "./YesNoSlider";
 import Preview from "./MainBox/Preview";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
 function MainContent() {
-  const navigate = useNavigate();
   type respone = {
     success: true;
     spaces: [];

@@ -1,10 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { AnimatedDottedLine } from "../components/Landing/AnimatedDottedLine";
+
 import { Footer } from "../components/Landing/Footer";
 import { PricingPlans } from "../components/Landing/PricingPlans";
 import { useRef } from "react";
 import * as motion from "motion/react-client";
-import { useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import Section1 from "../components/Landing/Section1";
 import Section2 from "../components/Landing/Section2";
 
@@ -12,7 +11,6 @@ function Landing() {
   const homeRef = useRef<HTMLDivElement>(null);
   const productRef = useRef(null);
   const pricingRef = useRef(null);
-  const { scrollY } = useScroll();
   const scrollToSection = (sectionRef: any) => {
     sectionRef.current.scrollIntoView({ behavior: "smooth" });
   };

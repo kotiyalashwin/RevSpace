@@ -20,6 +20,7 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       "react-prototypes": false,
+      "react-prototypes": false,
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },

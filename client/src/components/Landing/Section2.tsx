@@ -1,21 +1,13 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import * as motion from "motion/react-client";
 import { AnimatedDottedLine } from "./AnimatedDottedLine";
 import { SectionProps } from "./Section1";
-import {
-  useMotionValue,
-  useMotionValueEvent,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { useScroll, useTransform } from "framer-motion";
 
+// @ts-ignore
 const Section2 = forwardRef<HTMLDivElement, SectionProps>((props, ref) => {
   const { scrollY } = useScroll();
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    // console.log(latest);
-  });
 
-  const scale = useTransform(scrollY, [0, 1300], [1, 1.5]);
   const x1 = useTransform(scrollY, [0, 1300], [0, 250]);
   const x2 = useTransform(scrollY, [0, 1500], [0, -250]);
   const x3 = useTransform(scrollY, [0, 1700], [0, 250]);
@@ -49,6 +41,7 @@ const Section2 = forwardRef<HTMLDivElement, SectionProps>((props, ref) => {
               className="bg-white rounded-xl shadow-xl h-full gap-4 w-[35%] flex flex-col justify-center z-40"
               //   whileHover={{ x: 100 }}
               transition={{ duration: 5 }}
+              // @ts-ignore
               style={{ x: x1 }}
             >
               <p className="text-center text-xl font-semibold">
@@ -71,6 +64,7 @@ const Section2 = forwardRef<HTMLDivElement, SectionProps>((props, ref) => {
             <motion.div
               //   whileHover={{ x: -100 }}
               transition={{ duration: 3 }}
+              // @ts-ignore
               style={{ x: x2 }}
               className="bg-white rounded-xl shadow-xl h-full gap-4 w-[35%] flex flex-col justify-center"
             >
@@ -86,6 +80,7 @@ const Section2 = forwardRef<HTMLDivElement, SectionProps>((props, ref) => {
             <motion.div
               //   whileHover={{ x: 100 }}
               transition={{ duration: 3 }}
+              // @ts-ignore
               style={{ x: x3 }}
               className="bg-white rounded-xl shadow-xl h-full gap-4 w-[35%] flex flex-col justify-center z-40"
             >

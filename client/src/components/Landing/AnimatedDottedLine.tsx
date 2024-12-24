@@ -15,14 +15,14 @@ export const AnimatedDottedLine: React.FC<AnimatedDottedLineProps> = ({
   width = 600,
   height = 2,
   dotSize = 4,
-  dotColor = "",
+  // dotColor = "",
   spacing = 8,
   duration = 1.5,
   direction = "left",
 }) => {
   const isHorizontal = direction === "left" || direction === "right";
   const lineWidth = isHorizontal ? width : height;
-  const lineHeight = isHorizontal ? height : width;
+  // const lineHeight = isHorizontal ? height : width;
   const dots = Math.floor(lineWidth / spacing) + 1;
 
   const lineVariants = {

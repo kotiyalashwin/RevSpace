@@ -1,15 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { data } from "react-router-dom";
+import CopyCodeButton from "../components/Testimonial/CopyCodeButton";
 
-type Testimonial = {
+type Testimonials = {
   id: string;
   email: string;
   v_url: string;
-};
-
-type Testimonials = {
-  testimonials: Testimonial[];
 };
 
 export default function TestimonialVideos() {
@@ -24,7 +20,7 @@ export default function TestimonialVideos() {
     );
 
     const data = await response.data;
-
+    // @ts-ignore
     setTestimonials(data);
   };
 
@@ -53,6 +49,15 @@ export default function TestimonialVideos() {
               <div className="p-4">
                 <h2 className="text-xl font-semibold">{testimonial.email}</h2>
               </div>
+
+              <CopyCodeButton
+                code={`<iframe 
+            src="${testimonial.v_url}" 
+            title="Video Player" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+        </iframe>`}
+              />
             </div>
           ))}
       </div>

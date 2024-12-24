@@ -1,8 +1,4 @@
-// UseState: preview,wantImage,card,valueVideo,Valuetext
-
 import { Pencil, UserCircle, Video } from "lucide-react";
-import { useState } from "react";
-import VideoRecorder from "../VideoRecorder";
 import { useNavigate } from "react-router-dom";
 
 type PreviewProps = {
