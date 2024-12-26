@@ -28,10 +28,10 @@ const AutoCarousel = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 1 }}
-      className="  w-full  flex flex-col justify-center items-center"
+      transition={{ duration: 3 }}
+      className="   w-full h-full  flex flex-col justify-center items-center"
     >
-      <p className="text-xl p-4 bg-black  text-white backdrop-blur-md  capitalize mb-4 shadow-lg rounded-xl">
+      <p className="text-xl p-4 bg-black  text-white backdrop-blur-md  capitalize mb-4 shadow-lg rounded-xl transition-all ease-out">
         {images[currIndex].tag}
       </p>
       <img src={images[currIndex].src} alt="" />

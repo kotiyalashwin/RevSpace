@@ -19,9 +19,9 @@ const Section1 = forwardRef<HTMLDivElement, SectionProps>((props, ref) => {
     >
       <div className=" flex flex-col w-full  justify-center items-center">
         <div className=" h-[70%]  p-4 w-full flex flex-col justify-center items-center">
-          <div className="bg-white flex-col sm:flex sm:flex-row px-6 mt-4 py-8 items-center justify-between shadow-2xl rounded-2xl overflow-hidden   w-full">
+          <div className="bg-white flex-col sm:flex sm:flex-row px-6 mt-4 py-8 items-center justify-center sm:justify-between shadow-2xl rounded-2xl overflow-hidden   w-full">
             <div className="flex flex-col gap-8 sm:w-[75%]  justify-center items-center ">
-              <h1 className="sm:text-left text-center sm:break-words font-semibold font-default text-6xl  w-full  ">
+              <h1 className="sm:text-left text-center sm:break-words font-semibold font-default text-5xl  w-full  ">
                 Effortless Testimonial Collections
               </h1>
               <div>
@@ -42,8 +42,25 @@ const Section1 = forwardRef<HTMLDivElement, SectionProps>((props, ref) => {
                 </button>
               </div>
             </div>
+
             <motion.div
-              className="border-2 drop-shadow-lg shadow-2xl p-4 rounded-xl mt-2 "
+              className="border-2   sm:hidden drop-shadow-lg shadow-2xl p-4 rounded-xl mt-2 "
+              // initial={{ x: 200, opacity: 0 }}
+
+              initial={{
+                rotate: -30,
+                y: 250,
+                opacity: 0,
+              }}
+              animate={{ y: 0, opacity: 1, rotate: 0 }}
+              // animate={{ x: [150, 0, 0], opacity: [0, 0.5, 1] }}
+              transition={{ duration: 2, ease: "easeInOut" }}
+            >
+              <img className="rounded-xl" src="sample.jpg" alt="" />
+            </motion.div>
+
+            <motion.div
+              className="border-2 hidden sm:block drop-shadow-lg shadow-2xl p-4 rounded-xl mt-2 "
               // initial={{ x: 200, opacity: 0 }}
 
               initial={{

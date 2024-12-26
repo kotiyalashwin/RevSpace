@@ -32,7 +32,7 @@ function SpaceBox({ setIsOpen, spaces }: SpaceBoxProps) {
       initial="hidden"
       animate="visible"
       transition={{ duration: 1, ease: "easeIn" }}
-      className="rounded-xl p-6 mt-4 max-w-[80%] bg-white border-2"
+      className="rounded-xl p-6 mt-4 w-full lg:w-full bg-white border-2 h-full  "
       style={{
         backdropFilter: "blur(12px)",
       }}
@@ -46,7 +46,30 @@ function SpaceBox({ setIsOpen, spaces }: SpaceBoxProps) {
         </button>
       </header>
 
-      <div className="flex ">
+      <div className="w-full h-[500px] bg-gray-50 rounded-lg p-4">
+        <div className="h-full overflow-y-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 content-start">
+            {spaces && spaces.length > 0 ? (
+              spaces?.map((space) => {
+                return (
+                  <SpaceCard
+                    navigate={navigate}
+                    spacename={space.spacename}
+                    description={space.description}
+                    link={space.link}
+                  />
+                );
+              })
+            ) : (
+              <div className="w-full text-neutral-500 flex text-xl text-center items-center justify-center">
+                No Spaces Found.Create One
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* <div className="flex md:grid lg:flex-row flex-col h-[400px] sm:h-auto overflow-x-auto overflow-y-auto md:w-[70%]">
         {spaces && spaces.length > 0 ? (
           spaces?.map((space) => {
             return (
@@ -63,7 +86,7 @@ function SpaceBox({ setIsOpen, spaces }: SpaceBoxProps) {
             No Spaces Found.Create One
           </div>
         )}
-      </div>
+      </div> */}
     </motion.div>
   );
 }

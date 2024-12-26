@@ -39,7 +39,7 @@ const Section2 = forwardRef<HTMLDivElement, SectionProps>((props, ref) => {
           initial={{ y: 200, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ delay: 1, duration: 1, ease: "easeInOut" }}
-          className="border-2 border-black/50 rounded-xl shadow-lg p-8 h-full sm:hidden"
+          className="border-2 border-black/50 rounded-xl shadow-lg p-8 h-[35vh] sm:hidden "
         >
           <AutoCarousel />
         </motion.div>

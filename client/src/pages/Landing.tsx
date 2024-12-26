@@ -51,7 +51,7 @@ function Landing() {
             </li>
           </ul>
         </div>
-        <div className=" w-auto space-x-4 border-slate-500 flex-col sm:flex-row items-center ">
+        <div className=" w-auto space-x-4 border-slate-500 flex items-center justify-center ">
           <button className="btn-base" onClick={() => navigate("/login")}>
             Login
           </button>

@@ -48,7 +48,7 @@ function Verify({ verify }: page) {
   return (
     <div className="min-h-screen flex justify-center items-center font-default">
       <div className="max-w-7xl flex shadow-xl ">
-        <div className=" flex flex-col w-[60%] rounded-l-xl justify-center items-center p-8 space-y-5  bg-white border-2">
+        <div className=" flex flex-col w-full md:w-[60%] rounded-l-xl justify-center items-center p-8 space-y-5  bg-white border-2">
           <h1 className="font-semibold text-4xl">
             {verify === "login" ? "Login to RevSpace" : "Welcome to RevSpace"}
           </h1>
@@ -118,7 +118,7 @@ function Verify({ verify }: page) {
             )}
           </p>
         </div>
-        <div className="bg-[#171F25] rounded-r-xl gap-8  text-center flex justify-center flex-col  text-white">
+        <div className="bg-[#171F25] hidden rounded-r-xl gap-8  text-center md:flex justify-center flex-col  text-white">
           <h1 className="text-5xl p-4 ">
             {verify === "login" ? "Welcome back!!" : "Welcome To RevSpace"}
           </h1>
