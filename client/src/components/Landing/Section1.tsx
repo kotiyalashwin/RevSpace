@@ -19,16 +19,18 @@ const Section1 = forwardRef<HTMLDivElement, SectionProps>((props, ref) => {
     >
       <div className=" flex flex-col w-full  justify-center items-center">
         <div className=" h-[70%]  p-4 w-full flex flex-col justify-center items-center">
-          <div className="bg-white flex px-6 mt-4 py-8 items-center justify-between shadow-2xl rounded-2xl overflow-hidden   w-full">
-            <div className="flex flex-col gap-8 w-[75%] ">
-              <h1 className="text-left break-words font-semibold font-default text-6xl w-[75%]  ">
+          <div className="bg-white flex-col sm:flex sm:flex-row px-6 mt-4 py-8 items-center justify-between shadow-2xl rounded-2xl overflow-hidden   w-full">
+            <div className="flex flex-col gap-8 sm:w-[75%]  justify-center items-center ">
+              <h1 className="sm:text-left text-center sm:break-words font-semibold font-default text-6xl  w-full  ">
                 Effortless Testimonial Collections
               </h1>
-              <p className="text-black/50 w-xl text-xl w-[50%] break-words">
-                Gather heartfelt testimonials, showcase your impact, and build
-                trust—all in one seamless platform
-              </p>
               <div>
+                <p className="text-black/50  text-xl w-full sm:break-words sm:w-[50%] sm:text-left">
+                  Gather heartfelt testimonials, showcase your impact, and build
+                  trust—all in one seamless platform
+                </p>
+              </div>
+              <div className="w-full space-x-4  flex justify-center sm:justify-start">
                 <button
                   className="btn-base rounded-lg"
                   onClick={() => navigate("/signup")}
@@ -41,7 +43,7 @@ const Section1 = forwardRef<HTMLDivElement, SectionProps>((props, ref) => {
               </div>
             </div>
             <motion.div
-              className="border-2 drop-shadow-lg shadow-2xl p-4 rounded-xl "
+              className="border-2 drop-shadow-lg shadow-2xl p-4 rounded-xl mt-2 "
               // initial={{ x: 200, opacity: 0 }}
 
               initial={{
