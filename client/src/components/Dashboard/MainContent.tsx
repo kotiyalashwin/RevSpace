@@ -31,7 +31,7 @@ function MainContent() {
 
       if (data.success) {
         setSpaces(data.spaces);
-        console.log(data.spaces);
+        // console.log(data.spaces);
       } else {
         toast.error("Unable to fetch Spaces");
       }
@@ -44,8 +44,9 @@ function MainContent() {
     getSpaces();
     // console.log(spaces);
   }, []);
+
   return (
-    <div className=" md:ml-72 p-8">
+    <div className=" p-8">
       <header className="h-16 hidden sm:flex items-center justify-between mb-8">
         <h1 className="text-2xl  font-bold text-black">Welcome back, User!</h1>
         <div className="flex items-center space-x-4">

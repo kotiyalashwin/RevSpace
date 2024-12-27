@@ -18,30 +18,34 @@ function Verify({ verify }: page) {
   const navigate = useNavigate();
 
   const handleSubmit = async (e: any) => {
-    e.preventDefault();
+    try {
+      e.preventDefault();
 
-    if (
-      verify === "login"
-        ? !formData?.email || !formData.password
-        : !formData?.email || !formData.name || !formData.password
-    ) {
-      toast.error("All Fields Required");
-      return;
-    }
+      if (
+        verify === "login"
+          ? !formData?.email || !formData.password
+          : !formData?.email || !formData.name || !formData.password
+      ) {
+        toast.error("All Fields Required");
+        return;
+      }
 
-    const url = "http://localhost:3000/api/v1/user/";
-    const respone = await axios.post(`${url}${verify}`, formData, {
-      withCredentials: true,
-    });
-    const data = await respone.data;
-    // @ts-ignore
-    if (data.success) {
+      const url = "http://localhost:3000/api/v1/user/";
+      const respone = await axios.post(`${url}${verify}`, formData, {
+        withCredentials: true,
+      });
+      const data = await respone.data;
       // @ts-ignore
-      toast.success(data.message);
-      navigate("/dashboard");
-    } else {
-      // @ts-ignore
-      toast.error(data.error);
+      if (data.success) {
+        // @ts-ignore
+        toast.success(data.message);
+        navigate("/dashboard");
+      } else {
+        // @ts-ignore
+        toast.error(data.error);
+      }
+    } catch {
+      toast.error("Login Failed");
     }
   };
 

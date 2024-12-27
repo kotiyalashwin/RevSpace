@@ -1,14 +1,17 @@
 import axios from "axios";
-import { Cross, Crosshair, LogOut, X } from "lucide-react";
+
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import * as motion from "motion/react-client";
+import { LogOut, X } from "lucide-react";
 
 type MobSideBarProps = {
-  setSideBar: (arg0: boolean) => void;
+  current: string;
+  setCurrent: (arg: string) => void;
+  setSideBar: (arg: boolean) => void;
 };
 
-const MobSideBar = ({ setSideBar }: MobSideBarProps) => {
+const MobSideBar = ({ current, setCurrent, setSideBar }: MobSideBarProps) => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -35,13 +38,41 @@ const MobSideBar = ({ setSideBar }: MobSideBarProps) => {
       </motion.div>
       <nav className="space-y-8 flex flex-col items-center">
         <button
-          className={`flex text-lg lg:text-lg items-center space-x-3 p-3 rounded-lg transition-all bg-black text-white`}
+          onClick={() => {
+            setCurrent("dashboard");
+            setSideBar(false);
+          }}
+          className={`${
+            current === "dashboard"
+              ? "text-white bg-black"
+              : "bg-white  hover:bg-black hover:text-white"
+          } flex text-lg lg:text-lg items-center space-x-3 p-3 rounded-lg transition-all  `}
         >
           Dashboard
         </button>
         <button
-          onClick={() => navigate("/testimonials")}
-          className={`flex text-lg lg:text-lg items-center space-x-3 p-3 rounded-lg transition-all hover:text-white hover:bg-black`}
+          onClick={() => {
+            setCurrent("spaces");
+            setSideBar(false);
+          }}
+          className={`${
+            current === "spaces"
+              ? "bg-black text-white"
+              : "hover:text-white hover:bg-black"
+          } flex text-lg lg:text-lg items-center space-x-3 py-3 px-6 rounded-lg transition-all   `}
+        >
+          Spaces
+        </button>
+        <button
+          onClick={() => {
+            setCurrent("testimonials");
+            setSideBar(false);
+          }}
+          className={`${
+            current === "testimonials"
+              ? "bg-black text-white"
+              : "hover:text-white hover:bg-black"
+          } flex text-lg lg:text-lg items-center space-x-3 p-3 rounded-lg transition-all `}
         >
           Testimonials
         </button>

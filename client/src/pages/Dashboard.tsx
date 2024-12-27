@@ -5,12 +5,16 @@ import { useState } from "react";
 import { Menu } from "lucide-react";
 import * as motion from "motion/react-client";
 import { AnimatePresence } from "framer-motion";
+import Spaces from "./Spaces";
+import TestimonialVideos from "./TestimonialVideos";
 
 function Dashboard() {
+  const [current, setCurrent] = useState("dashboard");
   const [sidebar, setSideBar] = useState(false);
 
   return (
-    <div className=" min-h-screen font-default p-4">
+    <div className=" min-h-screen md:grid md:grid-cols-[250px_1fr] font-default p-4">
+      {/* MOBILE-START */}
       <header className="flex md:hidden items-center space-x-4 h-16">
         <div>
           <button onClick={() => setSideBar(true)} className="align-middle">
@@ -33,17 +37,28 @@ function Dashboard() {
             exit={{ x: -200 }}
             transition={{ duration: 0.25 }}
           >
-            <MobSideBar setSideBar={setSideBar} />
+            <MobSideBar
+              current={current}
+              setCurrent={setCurrent}
+              setSideBar={setSideBar}
+            />
           </motion.div>
         </AnimatePresence>
       )}
 
-      <div className="hidden md:inline-block">
-        <Sidebar />
+      {/* MOBILE-END */}
+
+      <div className="hidden md:inline">
+        <Sidebar current={current} setCurrent={setCurrent} />
       </div>
-      <div className="w-full ">
-        <MainContent />
-      </div>
+
+      {current === "dashboard" && (
+        <div className="w-full ">
+          <MainContent />
+        </div>
+      )}
+      {current === "spaces" && <Spaces />}
+      {current === "testimonials" && <TestimonialVideos />}
     </div>
   );
 }

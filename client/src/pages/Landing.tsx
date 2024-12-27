@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-
 import { Footer } from "../components/Landing/Footer";
 import { PricingPlans } from "../components/Landing/PricingPlans";
 import { useRef } from "react";

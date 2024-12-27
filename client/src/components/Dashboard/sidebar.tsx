@@ -4,7 +4,12 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import * as motion from "motion/react-client";
 
-function Sidebar() {
+type SidebarProps = {
+  current: string;
+  setCurrent: (arg: string) => void;
+};
+
+function Sidebar({ current, setCurrent }: SidebarProps) {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -34,19 +39,38 @@ function Sidebar() {
         </div>
         <nav className="space-y-4">
           <button
-            className={`flex text-xs lg:text-lg items-center space-x-3 p-3 rounded-lg transition-all bg-black text-white`}
+            onClick={() => setCurrent("dashboard")}
+            className={`${
+              current === "dashboard"
+                ? "text-white bg-black"
+                : "bg-white  hover:bg-black hover:text-white"
+            } flex text-lg lg:text-lg items-center space-x-3 p-3 rounded-lg transition-all  `}
           >
             Dashboard
           </button>
           <button
-            onClick={() => navigate("/testimonials")}
-            className={`flex text-xs lg:text-lg items-center space-x-3 p-3 rounded-lg transition-all hover:text-white hover:bg-black`}
+            onClick={() => setCurrent("spaces")}
+            className={`${
+              current === "spaces"
+                ? "bg-black text-white"
+                : "hover:text-white hover:bg-black"
+            } flex text-lg lg:text-lg items-center space-x-3 py-3 px-6 rounded-lg transition-all   `}
+          >
+            Spaces
+          </button>
+          <button
+            onClick={() => setCurrent("testimonials")}
+            className={`${
+              current === "testimonials"
+                ? "bg-black text-white"
+                : "hover:text-white hover:bg-black"
+            } flex text-lg lg:text-lg items-center space-x-3 p-3 rounded-lg transition-all `}
           >
             Testimonials
           </button>
           <button
             onClick={handleLogout}
-            className={`flex text-xs lg:text-lg items-center space-x-3 p-3 rounded-lg transition-all hover:text-white hover:bg-black`}
+            className={`flex text-lg lg:text-lg items-center space-x-3 p-3 rounded-lg transition-all hover:text-white hover:bg-black`}
           >
             LogOut
             <div className="ml-2">

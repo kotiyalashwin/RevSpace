@@ -29,12 +29,14 @@ const AutoCarousel = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 3 }}
-      className="   w-full h-full  flex flex-col justify-center items-center"
+      className="   w-full h-full overflow-hidden  flex flex-col  items-center"
     >
-      <p className="text-xl p-4 bg-black  text-white backdrop-blur-md  capitalize mb-4 shadow-lg rounded-xl transition-all ease-out">
+      <p className="text-sm text-center p-2 bg-black  text-white backdrop-blur-md  capitalize mb-4 shadow-lg rounded-xl transition-all ease-out">
         {images[currIndex].tag}
       </p>
-      <img src={images[currIndex].src} alt="" />
+      <div>
+        <img src={images[currIndex].src} height={75} alt="" />
+      </div>
     </motion.div>
   );
 };
