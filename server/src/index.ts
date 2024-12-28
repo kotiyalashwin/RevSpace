@@ -6,6 +6,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import testimonialRoute from "./routes/testimonial";
 
+const PORT = process.env.PORT || 5000;
+
 const app = express();
 app.use(cookieParser());
 app.use(
@@ -19,6 +21,6 @@ app.use("/api/v1/space", spaceRoute);
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/testimonial", testimonialRoute);
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
   console.log("Running Backend");
 });

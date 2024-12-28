@@ -14,7 +14,7 @@ const authMiddleware = async (
   try {
     const authToken = req.cookies.authCode;
     if (!authToken) {
-      res.json({ error: "Not authenticated", success: false });
+      res.status(403).json({ error: "Not authenticated", success: false });
       return;
     }
 
@@ -30,7 +30,7 @@ const authMiddleware = async (
     });
 
     if (!valid) {
-      res.json({ error: "Not Authenticated", success: false });
+      res.status(403).json({ error: "Not Authenticated", success: false });
       return;
     }
     req.user = decoded.user;

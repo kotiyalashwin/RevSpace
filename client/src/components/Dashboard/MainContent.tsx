@@ -1,4 +1,4 @@
-import { BellRing, CircleUserRound, Menu } from "lucide-react";
+import { BellRing, CircleUserRound } from "lucide-react";
 
 import StatBox from "./StatBox";
 import SpaceBox from "./SpaceBox";
