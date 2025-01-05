@@ -9,41 +9,28 @@ import YesNoSlider from "./YesNoSlider";
 import Preview from "./MainBox/Preview";
 import axios from "axios";
 import toast from "react-hot-toast";
+import useSpaces from "../../hooks/spaces";
+
+interface Space {
+  spacename: string;
+  description: string;
+  link: string;
+  testimonials: {
+    id: string;
+  };
+}
 
 function MainContent() {
-  type respone = {
-    success: true;
-    spaces: [];
-    error?: string;
-  };
   const [isOpen, setIsOpen] = useState(false);
-  const [spaces, setSpaces] = useState([]);
-  const getSpaces = async () => {
-    try {
-      const response = await axios.get<respone>(
-        "http://localhost:3000/api/v1/space/spaces",
-        {
-          withCredentials: true,
-        }
-      );
+  const [spaces, setSpaces] = useState<Space[]>([]);
 
-      const data = await response.data;
-
-      if (data.success) {
-        setSpaces(data.spaces);
-        // console.log(data.spaces);
-      } else {
-        toast.error("Unable to fetch Spaces");
-      }
-    } catch {
-      toast.error("Unable to fetch Spaces");
-    }
-  };
-
+  const { isLoading, spacesData } = useSpaces();
   useEffect(() => {
-    getSpaces();
-    // console.log(spaces);
-  }, []);
+    if (!isLoading) {
+      setSpaces(spacesData);
+    }
+    console.log(spaces);
+  }, [isLoading, spacesData]);
 
   return (
     <div className=" p-8">
@@ -62,6 +49,7 @@ function MainContent() {
       {/* @ts-ignore */}
       <StatBox spaces={spaces} />
       <SpaceBox spaces={spaces} setIsOpen={setIsOpen} />
+
       {isOpen && <SpaceForm setIsOpen={setIsOpen} />}
     </div>
   );

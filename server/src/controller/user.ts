@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import prisma from "../config";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { authReq } from "../middleware/auth";
 
 export const userSignup = async (req: Request, res: Response) => {
   try {
@@ -105,5 +106,13 @@ export const userLogOut = async (req: Request, res: Response) => {
   } catch (err) {
     console.error("Error Occured : ", err);
     throw new Error("Unable to LogOut");
+  }
+};
+
+export const sessionValid = (req: authReq, res: Response) => {
+  if (res.locals.isAuthenticated) {
+    res.status(200).json({ isAuthenticated: true });
+  } else {
+    res.status(201).json({ isAuthenticated: false });
   }
 };

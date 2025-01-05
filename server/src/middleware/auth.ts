@@ -34,7 +34,7 @@ const authMiddleware = async (
       return;
     }
     req.user = decoded.user;
-
+    res.locals.isAuthenticated = true;
     next();
   } catch {}
 };

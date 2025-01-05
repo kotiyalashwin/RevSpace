@@ -19,7 +19,7 @@ model User {
 model Space {
   id Int @id @default(autoincrement())
   userId String 
-  user    User     @relation(fields: [userId] , references: [email])
+  user    User     @relation(fields: [userId] , references: [email] , onDelete: Cascade)
   spacename String 
   description String
   link      String @unique //no 2 spaces will have same link
@@ -30,7 +30,7 @@ model Space {
 model SpaceMetadata {
   id Int @unique @default(autoincrement())
   spaceId Int @unique
-  space Space @relation(fields: [spaceId], references: [id])
+  space Space @relation(fields: [spaceId], references: [id] , onDelete: Cascade)
   formfields Json  //will include array of questions
 }
 
@@ -38,7 +38,7 @@ model SpaceMetadata {
 model Testimonial{
   id  String @id @default(uuid())
   spaceId String
-  space Space @relation(fields: [spaceId], references: [link])
+  space Space @relation(fields: [spaceId], references: [link], onDelete: Cascade)
   email  String 
   v_url String
   // text Json

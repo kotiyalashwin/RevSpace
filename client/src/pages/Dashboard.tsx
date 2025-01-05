@@ -17,8 +17,8 @@ function Dashboard() {
   const navigate = useNavigate();
 
   const { isAuthenticated, isLoading } = useSession();
-  console.log(isAuthenticated);
-  console.log(isLoading);
+  // console.log(isAuthenticated);
+  // console.log(isLoading);
 
   if (!isLoading && !isAuthenticated) {
     toast.error("Not Authenticated");
