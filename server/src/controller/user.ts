@@ -38,6 +38,7 @@ export const userSignup = async (req: Request, res: Response) => {
 
     res.cookie("authCode", token, {
       httpOnly: true,
+      secure: false,
       sameSite: "none",
     });
 
@@ -84,6 +85,7 @@ export const userSignin = async (req: Request, res: Response) => {
 
     res.cookie("authCode", token, {
       httpOnly: true,
+      secure: false,
       sameSite: "none",
     });
 

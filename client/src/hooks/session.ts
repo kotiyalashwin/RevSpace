@@ -11,9 +11,12 @@ const useSession = () => {
         const url =
           "http://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/user/session";
 
-        const response = await axios.get(url, {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          "http://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/user/session",
+          {
+            withCredentials: true,
+          }
+        );
         setIsAuthenticated(response.status === 200);
       } catch {
         setIsAuthenticated(false);
