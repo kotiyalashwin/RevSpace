@@ -31,7 +31,7 @@ function Verify({ verify }: page) {
       }
 
       // const url = "http://localhost:3000/api/v1/user/";
-      const url = "https://revspace.onrender.com:8080/api/v1/user/";
+      const url = "https://revspace.onrender.com/api/v1/user/";
       const respone = await axios.post(`${url}${verify}`, formData, {
         withCredentials: true,
       });

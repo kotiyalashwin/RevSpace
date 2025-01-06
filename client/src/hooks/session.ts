@@ -8,7 +8,7 @@ const useSession = () => {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const url = "https://revspace.onrender.com:8080/api/v1/user/session";
+        const url = "https://revspace.onrender.com/api/v1/user/session";
 
         const response = await axios.get(url, {
           withCredentials: true,
