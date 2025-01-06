@@ -13,7 +13,7 @@ export default function TestimonialVideos() {
 
   const getTestimonials = async () => {
     const url =
-      "http://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/testimonial/testimonials";
+      "https://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/testimonial/testimonials";
     const response = await axios.get(url, {
       withCredentials: true,
     });

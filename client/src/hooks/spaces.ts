@@ -17,7 +17,7 @@ const useSpaces = (): { isLoading: boolean; spacesData: Space[] } => {
     const getSpaces = async () => {
       try {
         const url =
-          "http://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/space/spaces";
+          "https://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/space/spaces";
         const response = await axios.get<respone>(url, {
           withCredentials: true,
         });

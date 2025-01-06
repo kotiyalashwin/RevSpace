@@ -16,7 +16,7 @@ const MobSideBar = ({ current, setCurrent, setSideBar }: MobSideBarProps) => {
 
   const handleLogout = async () => {
     const url =
-      "http://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/user/logout";
+      "https://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/user/logout";
     const response = await axios.post(url, null, {
       withCredentials: true,
     });

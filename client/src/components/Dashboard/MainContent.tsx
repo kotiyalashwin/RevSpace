@@ -84,7 +84,7 @@ const SpaceForm = ({ setIsOpen }: SpaceFormProps) => {
     };
 
     const url =
-      "http://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/space/newspace";
+      "https://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/space/newspace";
 
     const respone = await axios.post(url, body, {
       withCredentials: true,

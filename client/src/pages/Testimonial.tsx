@@ -20,7 +20,7 @@ function Testimonial() {
 
   const getSpaceDetials = async () => {
     try {
-      const url = `http://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/space/${link}/details`;
+      const url = `https://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/space/${link}/details`;
       const response = await axios.get(url, {
         withCredentials: true,
       });
@@ -52,7 +52,7 @@ function Testimonial() {
     if (videoBlob) formData.append("video", videoBlob); // Attach the Blob as "video"
 
     try {
-      const url = `http://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/testimonial/videoupload/${link}/${uploader}`;
+      const url = `https://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/testimonial/videoupload/${link}/${uploader}`;
 
       const response = await axios.post(url, formData, {
         withCredentials: true,

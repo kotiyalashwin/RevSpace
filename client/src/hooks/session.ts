@@ -9,7 +9,7 @@ const useSession = () => {
     const checkSession = async () => {
       try {
         const url =
-          "http://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/user/session";
+          "https://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/user/session";
 
         const response = await axios.get(url, {
           withCredentials: true,
