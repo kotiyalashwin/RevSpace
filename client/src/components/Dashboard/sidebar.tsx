@@ -13,13 +13,11 @@ function Sidebar({ current, setCurrent }: SidebarProps) {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    const response = await axios.post(
-      "http://localhost:3000/api/v1/user/logout",
-      null,
-      {
-        withCredentials: true,
-      }
-    );
+    const url =
+      "http://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/user/logout";
+    const response = await axios.post(url, null, {
+      withCredentials: true,
+    });
 
     const data = await response.data;
     // @ts-ignore

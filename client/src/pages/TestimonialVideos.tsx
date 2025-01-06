@@ -12,12 +12,11 @@ export default function TestimonialVideos() {
   const [testimonials, setTestimonials] = useState<Testimonials[]>();
 
   const getTestimonials = async () => {
-    const response = await axios.get(
-      "http://localhost:3000/api/v1/testimonial/testimonials",
-      {
-        withCredentials: true,
-      }
-    );
+    const url =
+      "http://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/testimonial/testimonials";
+    const response = await axios.get(url, {
+      withCredentials: true,
+    });
 
     const data = await response.data;
     // @ts-ignore

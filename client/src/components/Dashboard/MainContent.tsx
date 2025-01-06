@@ -85,13 +85,12 @@ const SpaceForm = ({ setIsOpen }: SpaceFormProps) => {
       },
     };
 
-    const respone = await axios.post(
-      "http://localhost:3000/api/v1/space/newspace",
-      body,
-      {
-        withCredentials: true,
-      }
-    );
+    const url =
+      "http://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/space/newspace";
+
+    const respone = await axios.post(url, body, {
+      withCredentials: true,
+    });
 
     // @ts-ignore
     const data = await respone.data;

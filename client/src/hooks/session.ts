@@ -8,12 +8,12 @@ const useSession = () => {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/v1/user/session",
-          {
-            withCredentials: true,
-          }
-        );
+        const url =
+          "http://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/user/session";
+
+        const response = await axios.get(url, {
+          withCredentials: true,
+        });
         setIsAuthenticated(response.status === 200);
       } catch {
         setIsAuthenticated(false);

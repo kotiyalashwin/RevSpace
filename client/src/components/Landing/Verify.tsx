@@ -30,7 +30,9 @@ function Verify({ verify }: page) {
         return;
       }
 
-      const url = "http://localhost:3000/api/v1/user/";
+      // const url = "http://localhost:3000/api/v1/user/";
+      const url =
+        "http://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/user/";
       const respone = await axios.post(`${url}${verify}`, formData, {
         withCredentials: true,
       });

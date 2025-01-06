@@ -38,7 +38,6 @@ export const userSignup = async (req: Request, res: Response) => {
 
     res.cookie("authCode", token, {
       httpOnly: true,
-      secure: true,
       sameSite: "none",
     });
 
@@ -59,7 +58,7 @@ export const userSignin = async (req: Request, res: Response) => {
 
     const { email, password } = req.body;
 
-    const exist = await prisma.user.findFirst({
+    const exist = await prisma.user.findUnique({
       where: {
         email,
       },
@@ -85,7 +84,6 @@ export const userSignin = async (req: Request, res: Response) => {
 
     res.cookie("authCode", token, {
       httpOnly: true,
-      secure: true,
       sameSite: "none",
     });
 
@@ -99,7 +97,6 @@ export const userLogOut = async (req: Request, res: Response) => {
   try {
     res.clearCookie("authCode", {
       httpOnly: true,
-      secure: true, // Use true if using HTTPS
       sameSite: "none",
     });
     res.json({ message: "Logged out" });

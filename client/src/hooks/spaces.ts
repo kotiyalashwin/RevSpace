@@ -24,12 +24,11 @@ const useSpaces = (): { isLoading: boolean; spacesData: Space[] } => {
   useEffect(() => {
     const getSpaces = async () => {
       try {
-        const response = await axios.get<respone>(
-          "http://localhost:3000/api/v1/space/spaces",
-          {
-            withCredentials: true,
-          }
-        );
+        const url =
+          "http://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/space/spaces";
+        const response = await axios.get<respone>(url, {
+          withCredentials: true,
+        });
 
         const data = response.data;
 
