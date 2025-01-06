@@ -2,15 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Trash2, ExternalLink } from "lucide-react";
 import useSpaces from "../hooks/spaces";
 
-interface Space {
+export interface Space {
   spacename: string;
   description: string;
   link: string;
-  testimonials: [
-    {
-      id: string;
-    }
-  ];
+  testimonials: [{}];
 }
 
 const SpaceCards = ({ spacename, link, testimonials }: Space) => (

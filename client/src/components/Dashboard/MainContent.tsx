@@ -15,9 +15,7 @@ interface Space {
   spacename: string;
   description: string;
   link: string;
-  testimonials: {
-    id: string;
-  };
+  testimonials: [{}];
 }
 
 function MainContent() {

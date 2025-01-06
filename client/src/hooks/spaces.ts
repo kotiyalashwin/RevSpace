@@ -1,15 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
-interface Space {
-  spacename: string;
-  description: string;
-  link: string;
-  testimonials: {
-    id: string;
-  };
-}
+import { Space } from "../pages/Spaces";
 
 type respone = {
   success: true;
