@@ -13,6 +13,7 @@ const authMiddleware = async (
 ) => {
   try {
     const authToken = req.cookies.authCode;
+    console.log("Token from cookies:", authToken);
     if (!authToken) {
       res.status(403).json({ error: "Not authenticated", success: false });
       return;
