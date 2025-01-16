@@ -7,7 +7,7 @@ import { authReq } from "../middleware/auth";
 
 export const userSignup = async (req: Request, res: Response) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
     const { success } = newUser.safeParse(req.body);
 
     if (!success) {

@@ -12,7 +12,7 @@ const Section2 = forwardRef<HTMLDivElement, SectionProps>((props, ref) => {
   const x1 = useTransform(scrollY, [0, 1300], [0, 250]);
   const x2 = useTransform(scrollY, [0, 1500], [0, -250]);
   const x3 = useTransform(scrollY, [0, 1700], [0, 250]);
-  console.log(scrollY);
+  // console.log(scrollY);
 
   return (
     <section

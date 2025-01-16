@@ -27,7 +27,7 @@ function MainContent() {
     if (!isLoading) {
       setSpaces(spacesData);
     }
-    console.log(spaces);
+    // console.log(spaces);
   }, [isLoading, spacesData]);
 
   return (

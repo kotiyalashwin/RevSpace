@@ -17,7 +17,7 @@ const AutoCarousel = () => {
       } else {
         setCurrIndex((c) => (c + 1) % images.length);
       }
-      console.log(currIndex);
+      // console.log(currIndex);
     }, 5000);
     return () => clearInterval(changeIndex);
   }, []);
