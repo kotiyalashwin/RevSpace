@@ -5,6 +5,14 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { authReq } from "../middleware/auth";
 
+const isProduction = process.env.NODE_ENV === "production";
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax",
+} as const;
+
 export const userSignup = async (req: Request, res: Response) => {
   try {
     // console.log(req.body);
@@ -36,11 +44,7 @@ export const userSignup = async (req: Request, res: Response) => {
       expiresIn: "1h",
     });
 
-    res.cookie("authCode", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-    });
+    res.cookie("authCode", token, cookieOptions);
 
     res.json({ message: `Welcome to RevSpace ${name}`, success: true });
   } catch (err) {
@@ -83,11 +87,7 @@ export const userSignin = async (req: Request, res: Response) => {
       }
     );
 
-    res.cookie("authCode", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-    });
+    res.cookie("authCode", token, cookieOptions);
 
     res.json({ success: true, message: `Welcome back ${exist.name}` });
   } catch (err) {
@@ -97,11 +97,7 @@ export const userSignin = async (req: Request, res: Response) => {
 
 export const userLogOut = async (req: Request, res: Response) => {
   try {
-    res.clearCookie("authCode", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-    });
+    res.clearCookie("authCode", cookieOptions);
     res.json({ message: "Logged out" });
   } catch (err) {
     console.error("Error Occured : ", err);

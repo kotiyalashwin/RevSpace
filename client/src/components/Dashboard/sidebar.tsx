@@ -4,6 +4,8 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import * as motion from "motion/react-client";
 
+const SERVER = import.meta.env.VITE_SERVER;
+
 type SidebarProps = {
   current: string;
   setCurrent: (arg: string) => void;
@@ -13,9 +15,7 @@ function Sidebar({ current, setCurrent }: SidebarProps) {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    const url =
-      "https://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/user/logout";
-    const response = await axios.post(url, null, {
+    const response = await axios.post(`${SERVER}/api/v1/user/logout`, null, {
       withCredentials: true,
     });
 

@@ -1,6 +1,10 @@
 import React, { useState, useRef } from "react";
 
-const VideoRecorder: React.FC = ({ setVideoBlob }: any) => {
+interface VideoRecorderProps {
+  setVideoBlob: (blob: Blob) => void;
+}
+
+const VideoRecorder: React.FC<VideoRecorderProps> = ({ setVideoBlob }) => {
   const [isRecording, setIsRecording] = useState(false); // State to track recording status
   const [videoURL, setVideoURL] = useState<string | null>(null); // State to store the recorded video URL
   const mediaRecorderRef = useRef<MediaRecorder | null>(null); // Ref to hold the MediaRecorder instance

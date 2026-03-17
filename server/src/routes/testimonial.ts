@@ -1,21 +1,34 @@
-import express, { Response } from "express";
-import authMiddleware, { authReq } from "../middleware/auth";
+import express from "express";
+import authMiddleware from "../middleware/auth";
 import {
   testimonialDetails,
   testimonialUpload,
+  textTestimonialUpload,
+  spaceInsights,
+  reanalyzeTestimonial,
 } from "../controller/testimonial";
 import multer from "multer";
 const upload = multer();
 
 const router = express.Router();
 
+// Video testimonial upload
 router.post(
   "/videoupload/:link/:uploader",
-  authMiddleware,
   upload.single("video"),
   testimonialUpload
 );
 
+// Text testimonial upload
+router.post("/textupload/:link", textTestimonialUpload);
+
+// Get all testimonials for user
 router.get("/testimonials", authMiddleware, testimonialDetails);
+
+// Get insights for a specific space
+router.get("/insights/:link", authMiddleware, spaceInsights);
+
+// Re-analyze a testimonial
+router.post("/reanalyze/:id", authMiddleware, reanalyzeTestimonial);
 
 export default router;

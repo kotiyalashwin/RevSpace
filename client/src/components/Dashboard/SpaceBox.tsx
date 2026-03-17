@@ -1,4 +1,4 @@
-import { BookPlus } from "lucide-react";
+import { BookPlus, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import * as motion from "motion/react-client";
 
@@ -104,12 +104,20 @@ const SpaceCard = ({
   <div className="bg-white rounded-lg shadow-md p-4 m-2 w-64 border-2">
     <h2 className="text-xl font-bold mb-2">{spacename}</h2>
     {description && <p className="text-gray-600 mb-4">{description}</p>}
-    <button
-      onClick={() => navigate(`/testimonial/${link}`)}
-      className="bg-black  text-white font-bold py-2 px-4 rounded"
-    >
-      View Form
-    </button>
+    <div className="flex gap-2">
+      <button
+        onClick={() => navigate(`/testimonial/${link}`)}
+        className="bg-black text-white font-bold py-2 px-4 rounded"
+      >
+        View Form
+      </button>
+      <button
+        onClick={() => navigate(`/insights/${link}`)}
+        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded flex items-center"
+      >
+        <BarChart3 size={18} />
+      </button>
+    </div>
   </div>
 );
 {

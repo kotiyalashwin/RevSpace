@@ -11,6 +11,8 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import useSpaces from "../../hooks/spaces";
 
+const SERVER = import.meta.env.VITE_SERVER;
+
 interface Space {
   spacename: string;
   description: string;
@@ -82,11 +84,7 @@ const SpaceForm = ({ setIsOpen }: SpaceFormProps) => {
         },
       },
     };
-
-    const url =
-      "https://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/space/newspace";
-
-    const respone = await axios.post(url, body, {
+    const respone = await axios.post(`${SERVER}/api/v1/space/newspace`, body, {
       withCredentials: true,
     });
 

@@ -3,6 +3,8 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
+const SERVER = import.meta.env.VITE_SERVER;
+
 type page = {
   verify: "signup" | "login";
 };
@@ -30,9 +32,7 @@ function Verify({ verify }: page) {
         return;
       }
 
-      // const url = "http://localhost:3000/api/v1/user/";
-      const url = "https://revspace.onrender.com/api/v1/user/";
-      const respone = await axios.post(`${url}${verify}`, formData, {
+      const respone = await axios.post(`${SERVER}/api/v1/user/${verify}`, formData, {
         withCredentials: true,
       });
       const data = await respone.data;

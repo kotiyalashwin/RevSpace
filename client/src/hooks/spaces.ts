@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Space } from "../pages/Spaces";
 
+const SERVER = import.meta.env.VITE_SERVER;
+
 type respone = {
   success: true;
   spaces: Space[];
@@ -16,9 +18,7 @@ const useSpaces = (): { isLoading: boolean; spacesData: Space[] } => {
   useEffect(() => {
     const getSpaces = async () => {
       try {
-        const url =
-          "https://ec2-13-48-42-141.eu-north-1.compute.amazonaws.com:8080/api/v1/space/spaces";
-        const response = await axios.get<respone>(url, {
+        const response = await axios.get<respone>(`${SERVER}/api/v1/space/spaces`, {
           withCredentials: true,
         });
 

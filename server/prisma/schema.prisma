@@ -36,10 +36,17 @@ model SpaceMetadata {
 
 
 model Testimonial{
-  id  String @id @default(uuid())
-  spaceId String
-  space Space @relation(fields: [spaceId], references: [link], onDelete: Cascade)
-  email  String 
-  v_url String
-  // text Json
+  id           String   @id @default(uuid())
+  spaceId      String
+  space        Space    @relation(fields: [spaceId], references: [link], onDelete: Cascade)
+  email        String
+  type         String   @default("video") // "video" | "text"
+  v_url        String?  // Cloudinary URL for video (nullable for text testimonials)
+  text_content String?  // Written feedback content
+  transcript   String?  // Whisper transcription for videos
+  sentiment    String?  // "positive" | "neutral" | "negative"
+  score        Int?     // 0-100 sentiment score
+  keywords     Json?    // Array of extracted keywords/themes
+  analyzed     Boolean  @default(false)
+  createdAt    DateTime @default(now())
 }

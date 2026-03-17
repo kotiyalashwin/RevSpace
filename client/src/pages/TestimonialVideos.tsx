@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import CopyCodeButton from "../components/Testimonial/CopyCodeButton";
 
+const SERVER = import.meta.env.VITE_SERVER;
+
 type Testimonials = {
   id: string;
   email: string;
@@ -12,9 +14,7 @@ export default function TestimonialVideos() {
   const [testimonials, setTestimonials] = useState<Testimonials[]>();
 
   const getTestimonials = async () => {
-    const url =
-      "https://revspace.onrender.com:8080/api/v1/testimonial/testimonials";
-    const response = await axios.get(url, {
+    const response = await axios.get(`${SERVER}/api/v1/testimonial/testimonials`, {
       withCredentials: true,
     });
 
