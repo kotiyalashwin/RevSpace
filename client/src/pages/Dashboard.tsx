@@ -6,7 +6,6 @@ import { Menu } from "lucide-react";
 import * as motion from "motion/react-client";
 import { AnimatePresence } from "framer-motion";
 import Spaces from "./Spaces";
-import TestimonialVideos from "./TestimonialVideos";
 import useSession from "../hooks/session";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -71,7 +70,6 @@ function Dashboard() {
           </div>
         )}
         {current === "spaces" && <Spaces />}
-        {current === "testimonials" && <TestimonialVideos />}
       </div>
     );
   }

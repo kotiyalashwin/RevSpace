@@ -63,14 +63,10 @@ const MobSideBar = ({ current, setCurrent, setSideBar }: MobSideBarProps) => {
         </button>
         <button
           onClick={() => {
-            setCurrent("testimonials");
             setSideBar(false);
+            navigate("/testimonials");
           }}
-          className={`${
-            current === "testimonials"
-              ? "bg-black text-white"
-              : "hover:text-white hover:bg-black"
-          } flex text-lg lg:text-lg items-center space-x-3 p-3 rounded-lg transition-all `}
+          className={`flex text-lg lg:text-lg items-center space-x-3 p-3 rounded-lg transition-all hover:text-white hover:bg-black`}
         >
           Testimonials
         </button>

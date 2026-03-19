@@ -57,12 +57,8 @@ function Sidebar({ current, setCurrent }: SidebarProps) {
             Spaces
           </button>
           <button
-            onClick={() => setCurrent("testimonials")}
-            className={`${
-              current === "testimonials"
-                ? "bg-black text-white"
-                : "hover:text-white hover:bg-black"
-            } flex text-lg lg:text-lg items-center space-x-3 p-3 rounded-lg transition-all `}
+            onClick={() => navigate("/testimonials")}
+            className={`flex text-lg lg:text-lg items-center space-x-3 p-3 rounded-lg transition-all hover:text-white hover:bg-black`}
           >
             Testimonials
           </button>

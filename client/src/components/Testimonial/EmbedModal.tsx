@@ -41,7 +41,7 @@ function EmbedModal({ open, onOpenChange, testimonial }: EmbedModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[90vw] sm:max-w-2xl max-h-[90vh] overflow-y-auto overflow-x-hidden">
         <DialogHeader>
           <DialogTitle>Get Embed Code</DialogTitle>
         </DialogHeader>
@@ -66,10 +66,10 @@ function EmbedModal({ open, onOpenChange, testimonial }: EmbedModalProps) {
           </div>
 
           {/* Live Preview */}
-          <div className="border rounded-lg p-4 bg-gray-50">
+          <div className="border rounded-lg p-4 bg-gray-50 overflow-hidden">
             <p className="text-sm font-medium text-gray-500 mb-3">Preview:</p>
             <div
-              className="bg-white p-4 rounded-lg flex justify-center"
+              className="bg-white p-4 rounded-lg flex justify-center overflow-x-auto"
               dangerouslySetInnerHTML={{ __html: embedCode }}
             />
           </div>
@@ -79,7 +79,7 @@ function EmbedModal({ open, onOpenChange, testimonial }: EmbedModalProps) {
             <p className="text-sm font-medium text-gray-500 mb-2">
               HTML Code:
             </p>
-            <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm max-h-[200px] overflow-y-auto">
+            <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-sm max-h-[200px] overflow-auto whitespace-pre-wrap break-all">
               <code>{embedCode}</code>
             </pre>
             <button
