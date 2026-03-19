@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 const SERVER = import.meta.env.VITE_SERVER;
 
@@ -17,6 +18,7 @@ type signupProps = {
 
 function Verify({ verify }: page) {
   const [formData, setFormData] = useState<signupProps>();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: any) => {
@@ -32,6 +34,7 @@ function Verify({ verify }: page) {
         return;
       }
 
+      setLoading(true);
       const respone = await axios.post(`${SERVER}/api/v1/user/${verify}`, formData, {
         withCredentials: true,
       });
@@ -47,6 +50,8 @@ function Verify({ verify }: page) {
       }
     } catch {
       toast.error("Login Failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -94,8 +99,15 @@ function Verify({ verify }: page) {
               }}
             />
 
-            <button type="submit" className="btn-base">
-              Submit
+            <button type="submit" className="btn-base flex items-center justify-center" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="animate-spin mr-2" size={20} />
+                  {verify === "login" ? "Logging in..." : "Creating account..."}
+                </>
+              ) : (
+                "Submit"
+              )}
             </button>
           </form>
 

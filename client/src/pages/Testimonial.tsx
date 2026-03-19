@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Pencil, UserCircle, Video, X, Send, Loader2 } from "lucide-react";
 import VideoRecorder from "../components/Dashboard/VideoRecorder";
+import { PageLoader } from "../components/ui/loader";
 
 const SERVER = import.meta.env.VITE_SERVER;
 
@@ -18,6 +19,7 @@ type space = {
 function Testimonial() {
   const { link } = useParams<{ link: string }>();
   const [space, setSpace] = useState<space>();
+  const [loading, setLoading] = useState(true);
   const [videoBlob, setVideoBlob] = useState<Blob>();
   const [mode, setMode] = useState<"select" | "video" | "text">("select");
   const [textReview, setTextReview] = useState("");
@@ -39,6 +41,8 @@ function Testimonial() {
       }
     } catch {
       toast.error("Unable to fetch Space details");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -115,6 +119,10 @@ function Testimonial() {
       setSubmitting(false);
     }
   };
+
+  if (loading) {
+    return <PageLoader text="Loading form..." />;
+  }
 
   if (submitted) {
     return (

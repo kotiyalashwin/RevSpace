@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Trash2, ExternalLink, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useSpaces from "../hooks/spaces";
+import { PageLoader } from "../components/ui/loader";
 
 export interface Space {
   spacename: string;
@@ -51,6 +52,10 @@ const Spaces: React.FC = () => {
   const handleInsights = (link: string) => {
     navigate(`/insights/${link}`);
   };
+
+  if (isLoading) {
+    return <PageLoader text="Loading spaces..." />;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 bg-gray-100 min-h-screen">
