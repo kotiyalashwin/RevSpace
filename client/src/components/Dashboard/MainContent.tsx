@@ -14,10 +14,11 @@ import useSpaces from "../../hooks/spaces";
 const SERVER = import.meta.env.VITE_SERVER;
 
 interface Space {
+  id?: number;
   spacename: string;
   description: string;
   link: string;
-  testimonials: [{}];
+  _count?: { testimonials: number };
 }
 
 function MainContent() {

@@ -5,16 +5,21 @@ import useSpaces from "../hooks/spaces";
 import { PageLoader } from "../components/ui/loader";
 
 export interface Space {
+  id?: number;
   spacename: string;
   description: string;
   link: string;
-  testimonials: [{}];
+  _count?: { testimonials: number };
+  testimonials?: { id: string }[];
 }
 
-const SpaceCards = ({ spacename, link, testimonials, onInsights }: Space & { onInsights: (link: string) => void }) => (
+const SpaceCards = ({ spacename, link, _count, testimonials, onInsights }: Space & { onInsights: (link: string) => void }) => {
+  const testimonialCount = _count?.testimonials ?? testimonials?.length ?? 0;
+
+  return (
   <div className="bg-white border border-gray-200 rounded-lg p-6 mb-4 transition-all duration-300 hover:shadow-lg">
     <h2 className="text-xl font-semibold mb-2 text-black">{spacename}</h2>
-    <p className="text-gray-600 mb-4">Testimonials: {testimonials.length}</p>
+    <p className="text-gray-600 mb-4">Testimonials: {testimonialCount}</p>
     <div className="flex flex-wrap gap-2">
       <button
         onClick={() => window.open(`/testimonial/${link}`, "_blank")}
@@ -36,7 +41,8 @@ const SpaceCards = ({ spacename, link, testimonials, onInsights }: Space & { onI
       </button>
     </div>
   </div>
-);
+  );
+};
 
 const Spaces: React.FC = () => {
   const [spaces, setSpaces] = useState<Space[]>([]);
