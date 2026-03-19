@@ -24,6 +24,8 @@ model Space {
   user         User           @relation(fields: [userId], references: [email], onDelete: Cascade)
   metadata     SpaceMetadata?
   testimonials Testimonial[]
+
+  @@index([userId])
 }
 
 model SpaceMetadata {
@@ -47,4 +49,7 @@ model Testimonial {
   transcript   String?
   type         String   @default("video")
   space        Space    @relation(fields: [spaceId], references: [link], onDelete: Cascade)
+
+  @@index([spaceId])
+  @@index([spaceId, analyzed])
 }

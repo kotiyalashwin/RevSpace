@@ -24,10 +24,9 @@ const authMiddleware = async (
       process.env.JWT_SECRET as string
     ) as JwtPayload;
 
-    const valid = await prisma.user.findFirst({
-      where: {
-        email: decoded.user,
-      },
+    const valid = await prisma.user.findUnique({
+      where: { email: decoded.user },
+      select: { email: true },
     });
 
     if (!valid) {

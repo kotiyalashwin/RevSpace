@@ -72,29 +72,28 @@ export const spaceDetails = async (req: Request, res: Response) => {
 
 export const bulkSpace = async (req: authReq, res: Response) => {
   try {
-    const { user }: any = String(req.user);
+    const user = req.user;
 
     const spaces = await prisma.space.findMany({
       where: { userId: user },
       select: {
+        id: true,
         spacename: true,
         description: true,
         link: true,
-        testimonials: {
-          select: {
-            id: true,
-          },
+        _count: {
+          select: { testimonials: true },
         },
       },
     });
 
-    if (!spaces) {
-      res.json({ succes: true, message: "No spaces found" });
+    if (!spaces || spaces.length === 0) {
+      res.json({ success: true, message: "No spaces found", spaces: [] });
       return;
     }
 
-    res.json({ success: true, spaces: spaces });
+    res.json({ success: true, spaces });
   } catch {
-    res.json({ sucess: false });
+    res.json({ success: false });
   }
 };

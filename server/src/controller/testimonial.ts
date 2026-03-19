@@ -175,43 +175,75 @@ export const spaceInsights = async (req: authReq, res: Response) => {
     const { link } = req.params;
     const user = req.user;
 
-    // Verify user owns this space
-    const space = await prisma.space.findFirst({
-      where: {
-        link,
-        userId: user,
-      },
-      include: {
-        metadata: true,
+    // Verify user owns this space (use findUnique for better performance)
+    const space = await prisma.space.findUnique({
+      where: { link },
+      select: {
+        id: true,
+        spacename: true,
+        description: true,
+        link: true,
+        userId: true,
       },
     });
 
-    if (!space) {
+    if (!space || space.userId !== user) {
       res.status(404).json({ success: false, message: "Space not found" });
       return;
     }
 
-    // Get all testimonials for this space
-    const testimonials = await prisma.testimonial.findMany({
-      where: { spaceId: link },
-      orderBy: { createdAt: "desc" },
-    });
+    // Run aggregation queries in parallel for better performance
+    const [totalCount, sentimentStats, avgScoreResult, testimonials] = await Promise.all([
+      // Total count
+      prisma.testimonial.count({
+        where: { spaceId: link },
+      }),
+      // Sentiment counts using groupBy
+      prisma.testimonial.groupBy({
+        by: ["sentiment"],
+        where: { spaceId: link, analyzed: true },
+        _count: true,
+      }),
+      // Average score
+      prisma.testimonial.aggregate({
+        where: { spaceId: link, analyzed: true },
+        _avg: { score: true },
+        _count: true,
+      }),
+      // Testimonials with only needed fields
+      prisma.testimonial.findMany({
+        where: { spaceId: link },
+        select: {
+          id: true,
+          email: true,
+          type: true,
+          v_url: true,
+          text_content: true,
+          transcript: true,
+          sentiment: true,
+          score: true,
+          keywords: true,
+          analyzed: true,
+          createdAt: true,
+        },
+        orderBy: { createdAt: "desc" },
+      }),
+    ]);
 
-    // Calculate aggregate stats
-    const totalReviews = testimonials.length;
-    const analyzedReviews = testimonials.filter((t) => t.analyzed);
-
+    // Process sentiment counts from groupBy result
     const sentimentCounts = {
-      positive: analyzedReviews.filter((t) => t.sentiment === "positive").length,
-      neutral: analyzedReviews.filter((t) => t.sentiment === "neutral").length,
-      negative: analyzedReviews.filter((t) => t.sentiment === "negative").length,
+      positive: 0,
+      neutral: 0,
+      negative: 0,
     };
+    for (const stat of sentimentStats) {
+      if (stat.sentiment === "positive") sentimentCounts.positive = stat._count;
+      else if (stat.sentiment === "neutral") sentimentCounts.neutral = stat._count;
+      else if (stat.sentiment === "negative") sentimentCounts.negative = stat._count;
+    }
 
-    const avgScore = analyzedReviews.length > 0
-      ? Math.round(
-          analyzedReviews.reduce((sum, t) => sum + (t.score || 0), 0) / analyzedReviews.length
-        )
-      : 0;
+    const analyzedCount = avgScoreResult._count;
+    const avgScore = Math.round(avgScoreResult._avg.score || 0);
 
     // Generate AI insights if we have analyzed testimonials
     let aiInsights = {
@@ -220,7 +252,8 @@ export const spaceInsights = async (req: authReq, res: Response) => {
       topConcerns: [] as string[],
     };
 
-    if (analyzedReviews.length > 0) {
+    if (analyzedCount > 0) {
+      const analyzedReviews = testimonials.filter((t) => t.analyzed);
       aiInsights = await generateInsightsSummary(analyzedReviews);
     }
 
@@ -233,8 +266,8 @@ export const spaceInsights = async (req: authReq, res: Response) => {
         link: space.link,
       },
       stats: {
-        totalReviews,
-        analyzedCount: analyzedReviews.length,
+        totalReviews: totalCount,
+        analyzedCount,
         avgScore,
         sentimentCounts,
       },
