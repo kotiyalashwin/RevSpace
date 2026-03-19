@@ -9,6 +9,14 @@ cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUD_API_KEY,
   api_secret: process.env.CLOUD_API_SECRET,
+  secure: true,
+});
+
+// Debug: Log cloudinary config (without secret)
+console.log("Cloudinary config:", {
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY ? "***set***" : "NOT SET",
+  api_secret: process.env.CLOUD_API_SECRET ? "***set***" : "NOT SET",
 });
 
 // Helper function to process video analysis asynchronously
@@ -51,7 +59,11 @@ export const testimonialUpload = async (req: authReq, res: Response) => {
   try {
     const { link } = req.params;
     const { uploader } = req.params;
-    const path = `Testimonials/${req.user}/${link}/${uploader}/`;
+    // Sanitize email for folder path (replace @ and . with _)
+    const sanitizedUploader = uploader.replace(/[@.]/g, "_");
+    const folder = `Testimonials/${link}/${sanitizedUploader}`;
+
+    console.log("Uploading video to folder:", folder);
 
     if (!req.file) {
       res.status(400).json({ success: false, message: "No file uploaded" });
@@ -59,7 +71,7 @@ export const testimonialUpload = async (req: authReq, res: Response) => {
     }
 
     const uploadStream = cloudinary.uploader.upload_stream(
-      { resource_type: "video", folder: path },
+      { resource_type: "video", folder },
       async (error, result) => {
         if (error) {
           console.error("Error uploading to Cloudinary:", error);
