@@ -7,46 +7,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-model User { 
-  id String @id @default(uuid())
-  email String @unique 
-  password String 
-  name     String 
-  spaces   Space[]   
+model User {
+  id       String  @id @default(uuid())
+  email    String  @unique
+  password String
+  name     String
+  spaces   Space[]
 }
 
 model Space {
-  id Int @id @default(autoincrement())
-  userId String 
-  user    User     @relation(fields: [userId] , references: [email] , onDelete: Cascade)
-  spacename String 
-  description String
-  link      String @unique //no 2 spaces will have same link
-  metadata   SpaceMetadata? 
+  id           Int            @id @default(autoincrement())
+  userId       String
+  spacename    String
+  description  String
+  link         String         @unique
+  user         User           @relation(fields: [userId], references: [email], onDelete: Cascade)
+  metadata     SpaceMetadata?
   testimonials Testimonial[]
 }
 
 model SpaceMetadata {
-  id Int @unique @default(autoincrement())
-  spaceId Int @unique
-  space Space @relation(fields: [spaceId], references: [id] , onDelete: Cascade)
-  formfields Json  //will include array of questions
+  id         Int   @unique @default(autoincrement())
+  spaceId    Int   @unique
+  formfields Json
+  space      Space @relation(fields: [spaceId], references: [id], onDelete: Cascade)
 }
 
-
-model Testimonial{
+model Testimonial {
   id           String   @id @default(uuid())
   spaceId      String
-  space        Space    @relation(fields: [spaceId], references: [link], onDelete: Cascade)
   email        String
-  type         String   @default("video") // "video" | "text"
-  v_url        String?  // Cloudinary URL for video (nullable for text testimonials)
-  text_content String?  // Written feedback content
-  transcript   String?  // Whisper transcription for videos
-  sentiment    String?  // "positive" | "neutral" | "negative"
-  score        Int?     // 0-100 sentiment score
-  keywords     Json?    // Array of extracted keywords/themes
+  v_url        String?
   analyzed     Boolean  @default(false)
   createdAt    DateTime @default(now())
+  keywords     Json?
+  score        Int?
+  sentiment    String?
+  text_content String?
+  transcript   String?
+  type         String   @default("video")
+  space        Space    @relation(fields: [spaceId], references: [link], onDelete: Cascade)
 }
