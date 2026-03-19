@@ -1,4 +1,4 @@
-import { BellRing, CircleUserRound } from "lucide-react";
+import { BellRing, CircleUserRound, Loader2 } from "lucide-react";
 
 import StatBox from "./StatBox";
 import SpaceBox from "./SpaceBox";
@@ -66,37 +66,53 @@ const SpaceForm = ({ setIsOpen }: SpaceFormProps) => {
   const [valueVideo, setValueVideo] = useState(false);
   const [valueText, setValueText] = useState(false);
   const [cards, setCards] = useState<string[]>([]);
-  const [preview, setPreview] = useState<string | null>(null); // State to store the preview URL
+  const [preview, setPreview] = useState<string | null>(null);
   const [wantImage, setWantImage] = useState(false);
+  const [creating, setCreating] = useState(false);
 
   const handleCreateSpace = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const body = {
-      spaceName: spaceName,
-      description: message,
-      spaceMetadata: {
-        formFields: {
-          header: header,
-          message: message,
-          wantVideo: valueVideo,
-          wantText: valueText,
-          questions: cards,
-        },
-      },
-    };
-    const respone = await axios.post(`${SERVER}/api/v1/space/newspace`, body, {
-      withCredentials: true,
-    });
 
-    // @ts-ignore
-    const data = await respone.data;
-    // @ts-ignore
-    if (data.success) {
-      // @ts-ignore
-      toast.success(`${data.message}`);
-    } else {
-      // @ts-ignore
-      toast.error(`${data.error}`);
+    if (!spaceName.trim()) {
+      toast.error("Space name is required");
+      return;
+    }
+
+    setCreating(true);
+
+    try {
+      const body = {
+        spaceName: spaceName,
+        description: message,
+        spaceMetadata: {
+          formFields: {
+            header: header,
+            message: message,
+            wantVideo: valueVideo,
+            wantText: valueText,
+            questions: cards,
+          },
+        },
+      };
+      const response = await axios.post<{ success: boolean; message?: string; error?: string }>(
+        `${SERVER}/api/v1/space/newspace`,
+        body,
+        { withCredentials: true }
+      );
+
+      const data = response.data;
+      if (data.success) {
+        toast.success(data.message || "Space created successfully!");
+        setIsOpen(false);
+        // Refresh the page to show new space
+        window.location.reload();
+      } else {
+        toast.error(data.error || "Failed to create space");
+      }
+    } catch (error) {
+      toast.error("Failed to create space");
+    } finally {
+      setCreating(false);
     }
   };
 
@@ -224,16 +240,25 @@ const SpaceForm = ({ setIsOpen }: SpaceFormProps) => {
                   <button
                     type="button"
                     onClick={() => setIsOpen(false)}
-                    className="px-4 py-2 text-sm  font-medium text-white  bg-black/30 hover:bg-black rounded-md focus:outline-none "
+                    disabled={creating}
+                    className="px-4 py-2 text-sm font-medium text-white bg-black/30 hover:bg-black rounded-md focus:outline-none disabled:opacity-50"
                   >
                     Cancel
                   </button>
 
                   <button
                     type="submit"
-                    className="px-4 py-2 text-sm font-medium text-white bg-[#01A8A4] border border-transparent rounded-md hover:bg-[#00837F] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    disabled={creating}
+                    className="px-4 py-2 text-sm font-medium text-white bg-[#01A8A4] border border-transparent rounded-md hover:bg-[#00837F] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 flex items-center"
                   >
-                    Create Space
+                    {creating ? (
+                      <>
+                        <Loader2 className="animate-spin mr-2" size={16} />
+                        Creating...
+                      </>
+                    ) : (
+                      "Create Space"
+                    )}
                   </button>
                 </div>
               </form>
