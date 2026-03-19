@@ -41,7 +41,7 @@ function TestimonialsEmbed() {
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        const response = await axios.get(
+        const response = await axios.get<SpaceData>(
           `${SERVER}/api/v1/testimonial/insights/${link}`,
           { withCredentials: true }
         );

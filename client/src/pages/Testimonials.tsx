@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, MessageSquare, Video, FileText } from "lucide-react";
+import { ArrowLeft, MessageSquare } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,7 +25,7 @@ function Testimonials() {
   useEffect(() => {
     const fetchSpaces = async () => {
       try {
-        const response = await axios.get(`${SERVER}/api/v1/space/spaces`, {
+        const response = await axios.get<{ spaces: Space[] }>(`${SERVER}/api/v1/space/spaces`, {
           withCredentials: true,
         });
         setSpaces(response.data.spaces || []);
