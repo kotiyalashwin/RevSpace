@@ -8,6 +8,8 @@ import { Toaster } from "react-hot-toast";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Insights from "./pages/Insights";
+import Testimonials from "./pages/Testimonials";
+import TestimonialsEmbed from "./pages/TestimonialsEmbed";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
         <Route path="/insights/:link" element={<Insights />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/testimonials" element={<Testimonials />} />
+        <Route path="/testimonials/:link" element={<TestimonialsEmbed />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />
