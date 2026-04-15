@@ -5,19 +5,45 @@ import { v2 as cloudinary } from "cloudinary";
 import prisma from "../config";
 import { transcribeVideo, analyzeSentiment, generateInsightsSummary } from "../services/analysis";
 
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_API_SECRET,
-  secure: true,
+// Use CLOUDINARY_URL if available (recommended), otherwise use individual vars
+if (process.env.CLOUDINARY_URL) {
+  // CLOUDINARY_URL auto-configures everything
+  console.log("Cloudinary: Using CLOUDINARY_URL");
+} else {
+  cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_API_KEY,
+    api_secret: process.env.CLOUD_API_SECRET,
+  });
+  console.log("Cloudinary: Using individual env vars");
+}
+
+// Always set secure
+cloudinary.config({ secure: true });
+
+// Debug: Log current config
+const config = cloudinary.config();
+console.log("Cloudinary config loaded:", {
+  cloud_name: config.cloud_name || "NOT SET",
+  api_key: config.api_key ? "***set***" : "NOT SET",
+  api_secret: config.api_secret ? "***set***" : "NOT SET",
 });
 
-// Debug: Log cloudinary config (without secret)
-console.log("Cloudinary config:", {
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUD_API_KEY ? "***set***" : "NOT SET",
-  api_secret: process.env.CLOUD_API_SECRET ? "***set***" : "NOT SET",
-});
+// Test endpoint to verify Cloudinary credentials
+export const testCloudinary = async (_req: any, res: Response) => {
+  try {
+    const result = await cloudinary.api.ping();
+    res.json({ success: true, message: "Cloudinary credentials valid", result });
+  } catch (error: any) {
+    console.error("Cloudinary test failed:", error);
+    res.json({
+      success: false,
+      error: error.message,
+      http_code: error.http_code,
+      details: error.error || error
+    });
+  }
+};
 
 // Helper function to process video analysis asynchronously
 async function processVideoAnalysis(testimonialId: string, videoUrl: string) {
@@ -74,8 +100,13 @@ export const testimonialUpload = async (req: authReq, res: Response) => {
       { resource_type: "video", folder },
       async (error, result) => {
         if (error) {
-          console.error("Error uploading to Cloudinary:", error);
-          res.json({ success: false, error: "Upload failed" });
+          console.error("Cloudinary upload error details:", {
+            message: error.message,
+            http_code: error.http_code,
+            name: error.name,
+            error: error,
+          });
+          res.json({ success: false, error: error.message || "Upload failed" });
           return;
         }
 
