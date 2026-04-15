@@ -1,93 +1,78 @@
 import React, { useState, useRef } from "react";
+import { Circle, Square, Video } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface VideoRecorderProps {
   setVideoBlob: (blob: Blob) => void;
 }
 
 const VideoRecorder: React.FC<VideoRecorderProps> = ({ setVideoBlob }) => {
-  const [isRecording, setIsRecording] = useState(false); // State to track recording status
-  const [videoURL, setVideoURL] = useState<string | null>(null); // State to store the recorded video URL
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null); // Ref to hold the MediaRecorder instance
-  const videoStreamRef = useRef<MediaStream | null>(null); // Ref to hold the MediaStream
+  const [isRecording, setIsRecording] = useState(false);
+  const [videoURL, setVideoURL] = useState<string | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const videoStreamRef = useRef<MediaStream | null>(null);
 
   const handleStartRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
       videoStreamRef.current = stream;
-
-      // Create a MediaRecorder instance
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
-
       const chunks: Blob[] = [];
-
-      // Collect the recorded data
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          chunks.push(event.data);
-        }
-      };
-
-      // Create a video URL after recording stops
+      mediaRecorder.ondataavailable = (e) => e.data.size > 0 && chunks.push(e.data);
       mediaRecorder.onstop = () => {
-        const videoBlob = new Blob(chunks, { type: "video/webm" });
-        setVideoBlob(videoBlob);
-
-        const videoURL = URL.createObjectURL(videoBlob);
-        setVideoURL(videoURL);
+        const blob = new Blob(chunks, { type: "video/webm" });
+        setVideoBlob(blob);
+        setVideoURL(URL.createObjectURL(blob));
       };
-
-      // Start recording
       mediaRecorder.start();
       setIsRecording(true);
-    } catch (error) {
-      console.error("Error accessing camera:", error);
-      alert("Unable to access camera. Please check your permissions.");
+    } catch {
+      alert("Unable to access camera. Please check permissions.");
     }
   };
 
   const handleStopRecording = () => {
-    // Stop the recording
     mediaRecorderRef.current?.stop();
     setIsRecording(false);
-
-    // Stop the video stream
-    videoStreamRef.current?.getTracks().forEach((track) => track.stop());
+    videoStreamRef.current?.getTracks().forEach((t) => t.stop());
   };
 
   return (
-    <div className="video-recorder">
-      <div style={{ marginBottom: "20px" }}>
-        <button
-          onClick={isRecording ? handleStopRecording : handleStartRecording}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: isRecording ? "#FF4B4B" : "#4CAF50",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          {isRecording ? "Stop Recording" : "Start Recording"}
-        </button>
-      </div>
+    <div className="space-y-4">
+      <button
+        type="button"
+        onClick={isRecording ? handleStopRecording : handleStartRecording}
+        className={cn(
+          "w-full h-11 inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium border transition-colors",
+          isRecording
+            ? "bg-danger/10 border-danger/30 text-danger hover:bg-danger/20"
+            : "bg-bg border-border text-fg-muted hover:text-fg hover:border-border-hover hover:bg-bg-hover"
+        )}
+      >
+        {isRecording ? (
+          <>
+            <Square size={12} fill="currentColor" />
+            Stop recording
+          </>
+        ) : (
+          <>
+            <Circle size={12} fill="currentColor" className="text-danger" />
+            Start recording
+          </>
+        )}
+      </button>
+
       {videoURL && (
-        <div>
-          <p>Recorded Video:</p>
+        <div className="space-y-2">
+          <p className="font-mono text-[10px] uppercase tracking-wider text-fg-muted flex items-center gap-1.5">
+            <Video size={11} />
+            Preview
+          </p>
           <video
             src={videoURL}
             controls
-            style={{
-              width: "100%",
-              maxWidth: "500px",
-              height: "auto",
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-            }}
+            className="w-full rounded-md border border-border bg-bg"
           />
         </div>
       )}

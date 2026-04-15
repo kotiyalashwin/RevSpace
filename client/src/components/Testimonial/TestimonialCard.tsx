@@ -1,5 +1,4 @@
-import { Video, FileText, Code } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Video, FileText, Code, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface Testimonial {
@@ -23,71 +22,61 @@ function getVideoThumbnailUrl(videoUrl: string): string {
 function TestimonialCard({ testimonial, onGetEmbed }: TestimonialCardProps) {
   const formattedDate = new Date(testimonial.createdAt).toLocaleDateString(
     "en-US",
-    {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    }
+    { year: "numeric", month: "short", day: "numeric" }
   );
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardContent className="p-4">
-        {/* Type Badge */}
-        <div className="flex items-center justify-between mb-3">
-          <Badge variant="outline" className="gap-1">
-            {testimonial.type === "video" ? (
-              <Video size={14} />
-            ) : (
-              <FileText size={14} />
-            )}
+    <article className="group rounded-lg border border-border bg-bg-elevated transition-colors duration-150 hover:border-border-hover overflow-hidden flex flex-col">
+      <div className="p-5 flex-1 space-y-4">
+        <div className="flex items-center justify-between">
+          <Badge>
+            {testimonial.type === "video" ? <Video size={10} /> : <FileText size={10} />}
             {testimonial.type}
           </Badge>
+          <span className="font-mono text-[10px] text-fg-subtle">{formattedDate}</span>
         </div>
 
-        {/* Preview Content */}
-        <div className="mb-3 min-h-[80px]">
-          {testimonial.type === "video" && testimonial.v_url ? (
-            <div className="relative rounded-lg overflow-hidden bg-gray-100">
-              <img
-                src={getVideoThumbnailUrl(testimonial.v_url)}
-                alt="Video thumbnail"
-                className="w-full h-32 object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src =
-                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='80' viewBox='0 0 100 80'%3E%3Crect fill='%23f3f4f6' width='100' height='80'/%3E%3Ctext x='50' y='45' text-anchor='middle' fill='%239ca3af' font-size='12'%3EVideo%3C/text%3E%3C/svg%3E";
-                }}
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-black/60 rounded-full p-3">
-                  <Video className="text-white" size={20} />
-                </div>
+        {testimonial.type === "video" && testimonial.v_url ? (
+          <div className="relative rounded-md overflow-hidden bg-bg border border-border aspect-video">
+            <img
+              src={getVideoThumbnailUrl(testimonial.v_url)}
+              alt=""
+              className="w-full h-full object-cover opacity-90"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = "none";
+              }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/50 to-transparent">
+              <div className="size-12 rounded-full bg-fg/95 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Play size={16} className="text-bg ml-0.5" fill="currentColor" />
               </div>
             </div>
-          ) : (
-            <p className="text-gray-600 text-sm line-clamp-3 italic">
-              "{testimonial.content?.slice(0, 100)}
-              {(testimonial.content?.length || 0) > 100 ? "..." : ""}"
+          </div>
+        ) : (
+          <blockquote className="border-l-2 border-border pl-4 py-1">
+            <p className="text-sm text-fg leading-relaxed line-clamp-4 italic">
+              "{testimonial.content?.slice(0, 200)}
+              {(testimonial.content?.length || 0) > 200 ? "…" : ""}"
             </p>
-          )}
-        </div>
+          </blockquote>
+        )}
 
-        {/* Footer */}
-        <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
-          <span className="truncate max-w-[150px]">{testimonial.email}</span>
-          <span>{formattedDate}</span>
-        </div>
+        <p className="font-mono text-[11px] text-fg-muted truncate">
+          {testimonial.email}
+        </p>
+      </div>
 
-        {/* Get Embed Button */}
-        <button
-          onClick={() => onGetEmbed(testimonial)}
-          className="w-full flex items-center justify-center gap-2 bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition-colors"
-        >
-          <Code size={16} />
-          Get Embed Code
-        </button>
-      </CardContent>
-    </Card>
+      <button
+        onClick={() => onGetEmbed(testimonial)}
+        className="border-t border-border px-5 py-3 flex items-center justify-between text-xs font-medium text-fg-muted hover:text-fg hover:bg-bg-hover transition-colors"
+      >
+        <span className="flex items-center gap-2">
+          <Code size={12} />
+          Get embed code
+        </span>
+        <span className="font-mono text-fg-subtle group-hover:text-fg">→</span>
+      </button>
+    </article>
   );
 }
 

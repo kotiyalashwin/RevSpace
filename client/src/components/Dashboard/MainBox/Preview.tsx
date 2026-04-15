@@ -1,5 +1,4 @@
-import { Pencil, UserCircle, Video } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Pencil, Video } from "lucide-react";
 
 type PreviewProps = {
   preview: string | null;
@@ -11,85 +10,62 @@ type PreviewProps = {
   message: string;
 };
 
-function Preview({
-  cards,
-  valueVideo,
-  valueText,
-  header,
-  message,
-}: PreviewProps) {
-  const navigate = useNavigate();
-
-  function handleReset() {
-    navigate("/testimonial");
-  }
+function Preview({ cards, valueVideo, valueText, header, message }: PreviewProps) {
   return (
-    <div className="w-full md:w-[70%] h-full md:min-h-[60vh] bg-white p-2 flex flex-col  items-center justify-evenly md:justify-normal rounded-lg">
-      <div className="text-cyan-800">
-        <UserCircle size={60} />
-      </div>
-      <header className="text-center w-full">
-        <h1 className="text-4xl lg:text-6xl text-neutral-600 font-bold mb-2">
+    <div className="w-full rounded-lg border border-border bg-bg p-8 flex flex-col">
+      <p className="font-mono text-[10px] uppercase tracking-wider text-fg-subtle mb-6">
+        Live preview
+      </p>
+
+      <div className="flex-1 flex flex-col items-center text-center py-6">
+        <div className="size-12 rounded-full bg-bg-elevated border border-border flex items-center justify-center mb-6">
+          <span className="text-fg-muted text-lg font-medium">R</span>
+        </div>
+
+        <h1 className="text-2xl md:text-3xl font-medium tracking-tight text-fg mb-2 leading-tight">
           {header}
         </h1>
-        <p className="text-sm lg:text-xl text-neutral-500">{message}</p>
-      </header>
+        <p className="text-sm text-fg-muted max-w-sm leading-relaxed mb-8">
+          {message}
+        </p>
 
-      {/* {preview && wantImage && (
-        <div style={{ marginTop: "20px" }}>
-          <img
-            src={preview}
-            alt="Uploaded Preview"
-            style={{
-              width: "300px",
-              height: "200px",
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-            }}
-          />
-        </div>
-      )} */}
-
-      {cards.length === 0 ? null : (
-        <div className="p-4 w-full">
-          <header className="text-neutral-600 font-semibold">
-            Try to Answer these Question:-
-          </header>
-          <div className="bg-gray-200 p-4">
-            {cards.map((card, i) => {
-              const letter = String.fromCharCode(97 + i);
-              return (
-                <p key={i} className="text-lg p-2 text-slate-800">
-                  {`${letter}) `}
+        {cards.length > 0 && (
+          <div className="w-full mb-6 text-left space-y-2">
+            <p className="font-mono text-[10px] uppercase tracking-wider text-fg-subtle">
+              Questions
+            </p>
+            <div className="space-y-1.5">
+              {cards.map((card, i) => (
+                <p key={i} className="text-sm text-fg-muted">
+                  <span className="font-mono text-fg-subtle mr-2">
+                    {String.fromCharCode(97 + i)}.
+                  </span>
                   {card}
                 </p>
-              );
-            })}
+              ))}
+            </div>
           </div>
+        )}
+
+        <div className="flex flex-col gap-2 w-full">
+          {valueVideo && (
+            <div className="flex items-center justify-center gap-2 h-10 px-4 rounded-md border border-border bg-bg-elevated text-sm text-fg-muted">
+              <Video size={14} />
+              Record video testimonial
+            </div>
+          )}
+          {valueText && (
+            <div className="flex items-center justify-center gap-2 h-10 px-4 rounded-md border border-border bg-bg-elevated text-sm text-fg-muted">
+              <Pencil size={14} />
+              Write a review
+            </div>
+          )}
         </div>
-      )}
-      {valueVideo && (
-        <button className="bg-blue-600 flex text-white px-2 py-4 rounded-md m-4">
-          <Video />
-          <span className="ml-4">Record Video Testiomonial</span>
-        </button>
-      )}
-      {/* {wantRecord && <VideoRecorder />} */}
-      {valueText && (
-        <button className="bg-slate-900 flex text-white px-2 py-4 rounded-md m-4">
-          <Pencil />
-          <span className="ml-4">Write Your Review</span>
-        </button>
-      )}
+      </div>
 
-      <button
-        className="bg-black px-2 py-4 w-1/2 text-[20px] text-white"
-        onClick={handleReset}
-      >
-        Reset
-      </button>
-
-      <p className="text-neutral-400">Testimonials by RevSpace</p>
+      <p className="font-mono text-[10px] uppercase tracking-wider text-fg-subtle text-center pt-4 border-t border-border">
+        Powered by RevSpace
+      </p>
     </div>
   );
 }

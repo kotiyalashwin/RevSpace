@@ -1,4 +1,5 @@
 import { ChangeEvent, useState } from "react";
+import { Plus, Pencil, Trash2, Check, X } from "lucide-react";
 
 type DyCardProps = {
   cards: string[];
@@ -20,8 +21,7 @@ const DynamicInputCards: React.FC<DyCardProps> = ({ cards, setCards }) => {
   };
 
   const handleDelete = (index: number): void => {
-    const newCards = cards.filter((_, i) => i !== index);
-    setCards(newCards);
+    setCards(cards.filter((_, i) => i !== index));
   };
 
   const startEdit = (index: number): void => {
@@ -38,30 +38,86 @@ const DynamicInputCards: React.FC<DyCardProps> = ({ cards, setCards }) => {
     }
   };
 
-  return (
-    <div className="space-y-4">
-      <button
-        type="button"
-        onClick={() => setShowInput(true)}
-        className="w-full bg-[#8e8e8e] hover:bg-black text-white py-2 px-4 rounded flex items-center justify-center gap-2 transition-colors"
-      >
-        <span className="text-xl">+</span> Add New Item
-      </button>
+  const inputCls =
+    "flex-1 h-9 rounded-md border border-border bg-bg-elevated px-3 text-sm text-fg placeholder:text-fg-subtle focus-visible:outline-none focus-visible:border-fg-muted";
 
-      {showInput && (
-        <div className="flex gap-2 bg-slate-200 p-2">
+  return (
+    <div className="space-y-2 mt-2">
+      {cards.length === 0 && !showInput && (
+        <p className="text-xs text-fg-subtle font-mono uppercase tracking-wider">
+          No questions yet
+        </p>
+      )}
+
+      <div className="space-y-1.5">
+        {cards.map((card, index) => (
+          <div
+            key={index}
+            className="flex items-center gap-2 rounded-md border border-border bg-bg-elevated px-3 py-2 group"
+          >
+            {editIndex === index ? (
+              <>
+                <input
+                  value={editValue}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setEditValue(e.target.value)
+                  }
+                  className={inputCls}
+                />
+                <button
+                  type="button"
+                  onClick={saveEdit}
+                  className="p-1.5 text-success hover:bg-bg-hover rounded transition-colors"
+                >
+                  <Check size={14} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditIndex(null)}
+                  className="p-1.5 text-fg-muted hover:bg-bg-hover rounded transition-colors"
+                >
+                  <X size={14} />
+                </button>
+              </>
+            ) : (
+              <>
+                <span className="flex-1 text-sm text-fg">{card}</span>
+                <button
+                  type="button"
+                  onClick={() => startEdit(index)}
+                  className="p-1.5 text-fg-muted hover:text-fg hover:bg-bg-hover rounded transition-colors opacity-0 group-hover:opacity-100"
+                >
+                  <Pencil size={14} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(index)}
+                  className="p-1.5 text-fg-muted hover:text-danger hover:bg-bg-hover rounded transition-colors opacity-0 group-hover:opacity-100"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {showInput ? (
+        <div className="flex gap-2">
           <input
             value={inputValue}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setInputValue(e.target.value)
             }
             placeholder="Question..."
-            className="flex-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+            autoFocus
+            onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAdd())}
+            className={inputCls}
           />
           <button
             type="button"
             onClick={handleAdd}
-            className="bg-black  text-white px-4 py-2 rounded transition-colors"
+            className="px-3 h-9 text-xs font-medium bg-fg text-bg rounded-md hover:bg-fg/90 transition-colors"
           >
             Add
           </button>
@@ -71,65 +127,23 @@ const DynamicInputCards: React.FC<DyCardProps> = ({ cards, setCards }) => {
               setShowInput(false);
               setInputValue("");
             }}
-            className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded transition-colors"
+            className="px-3 h-9 text-xs text-fg-muted hover:text-fg hover:bg-bg-elevated rounded-md transition-colors"
           >
-            ×
+            Cancel
           </button>
         </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setShowInput(true)}
+          className="w-full h-9 flex items-center justify-center gap-2 rounded-md border border-dashed border-border text-fg-muted hover:text-fg hover:border-border-hover hover:bg-bg-elevated transition-colors text-xs font-medium"
+        >
+          <Plus size={14} />
+          Add question
+        </button>
       )}
-
-      <div className="space-y-2">
-        {cards.map((card, index) => (
-          <div key={index} className="bg-white shadow rounded-lg p-4 border">
-            {editIndex === index ? (
-              <div className="flex gap-2">
-                <input
-                  value={editValue}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setEditValue(e.target.value)
-                  }
-                  className="flex-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
-                />
-                <button
-                  type="button"
-                  onClick={saveEdit}
-                  className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded transition-colors"
-                >
-                  Save
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEditIndex(null)}
-                  className="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center justify-between">
-                <span>{card}</span>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => startEdit(index)}
-                    className="text-blue-500 hover:text-blue-600 px-2 py-1 rounded transition-colors"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(index)}
-                    className="text-red-500 hover:text-red-600 px-2 py-1 rounded transition-colors"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
     </div>
   );
 };
+
 export default DynamicInputCards;

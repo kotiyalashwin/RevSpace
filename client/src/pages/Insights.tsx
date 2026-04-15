@@ -1,13 +1,20 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Video, FileText, TrendingUp, TrendingDown, Sparkles, RefreshCw } from "lucide-react";
+import {
+  ArrowLeft,
+  Video,
+  FileText,
+  TrendingUp,
+  TrendingDown,
+  Sparkles,
+  RefreshCw,
+} from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
+import { PageLoader } from "@/components/ui/loader";
+import { cn } from "@/lib/utils";
 
 const SERVER = import.meta.env.VITE_SERVER;
 
@@ -26,27 +33,14 @@ interface Testimonial {
 
 interface InsightsData {
   success: boolean;
-  space: {
-    id: number;
-    name: string;
-    description: string;
-    link: string;
-  };
+  space: { id: number; name: string; description: string; link: string };
   stats: {
     totalReviews: number;
     analyzedCount: number;
     avgScore: number;
-    sentimentCounts: {
-      positive: number;
-      neutral: number;
-      negative: number;
-    };
+    sentimentCounts: { positive: number; neutral: number; negative: number };
   };
-  insights: {
-    summary: string;
-    topAppreciations: string[];
-    topConcerns: string[];
-  };
+  insights: { summary: string; topAppreciations: string[]; topConcerns: string[] };
   testimonials: Testimonial[];
 }
 
@@ -59,9 +53,10 @@ function Insights() {
 
   const fetchInsights = async () => {
     try {
-      const response = await axios.get<InsightsData>(`${SERVER}/api/v1/testimonial/insights/${link}`, {
-        withCredentials: true,
-      });
+      const response = await axios.get<InsightsData>(
+        `${SERVER}/api/v1/testimonial/insights/${link}`,
+        { withCredentials: true }
+      );
       setData(response.data);
     } catch {
       toast.error("Failed to load insights");
@@ -81,287 +76,292 @@ function Insights() {
     fetchInsights();
   };
 
-  const getSentimentColor = (sentiment: string | null) => {
-    switch (sentiment) {
-      case "positive":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "negative":
-        return "bg-red-100 text-red-800 border-red-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
-    }
+  const sentimentVariant = (
+    s: string | null
+  ): "success" | "destructive" | "default" => {
+    if (s === "positive") return "success";
+    if (s === "negative") return "destructive";
+    return "default";
   };
 
-  const getScoreColor = (score: number) => {
-    if (score >= 70) return "text-green-600";
-    if (score >= 40) return "text-yellow-600";
-    return "text-red-600";
-  };
+  const scoreColor = (score: number) =>
+    score >= 70 ? "text-success" : score >= 40 ? "text-fg" : "text-danger";
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
-      </div>
-    );
-  }
-
-  if (!data) {
-    return null;
-  }
+  if (loading) return <PageLoader text="Loading insights" />;
+  if (!data) return null;
 
   const { space, stats, insights, testimonials } = data;
-  const totalSentiments = stats.sentimentCounts.positive + stats.sentimentCounts.neutral + stats.sentimentCounts.negative;
+  const totalSent =
+    stats.sentimentCounts.positive + stats.sentimentCounts.neutral + stats.sentimentCounts.negative;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-bg text-fg">
       {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+      <header className="sticky top-0 z-20 border-b border-border bg-bg/80 backdrop-blur-md">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-4 min-w-0">
             <button
               onClick={() => navigate("/dashboard")}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-1.5 text-fg-muted hover:text-fg hover:bg-bg-elevated rounded-md transition-colors"
             >
-              <ArrowLeft size={24} />
+              <ArrowLeft size={18} />
             </button>
-            <div>
-              <h1 className="text-2xl font-bold">{space.name}</h1>
-              <p className="text-gray-500 text-sm">{space.description}</p>
+            <div className="min-w-0">
+              <p className="font-mono text-[10px] uppercase tracking-wider text-fg-muted">
+                Insights
+              </p>
+              <h1 className="text-base font-medium tracking-tight truncate">
+                {space.name}
+              </h1>
             </div>
           </div>
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+            className="inline-flex items-center gap-2 h-8 px-3 rounded-md border border-border bg-bg-elevated text-xs text-fg-muted hover:text-fg hover:border-border-hover transition-colors disabled:opacity-50"
           >
-            <RefreshCw size={18} className={refreshing ? "animate-spin" : ""} />
+            <RefreshCw size={12} className={refreshing ? "animate-spin" : ""} />
             Refresh
           </button>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">Total Reviews</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-4xl font-bold">{stats.totalReviews}</div>
-              <p className="text-sm text-gray-500">{stats.analyzedCount} analyzed</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">Average Score</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className={`text-4xl font-bold ${getScoreColor(stats.avgScore)}`}>
-                {stats.avgScore}%
-              </div>
-              <Progress value={stats.avgScore} className="mt-2" />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">Sentiment Distribution</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex gap-2 mb-2">
-                <Badge variant="outline" className="bg-green-100 text-green-800">
-                  +{stats.sentimentCounts.positive}
-                </Badge>
-                <Badge variant="outline" className="bg-gray-100 text-gray-800">
-                  ~{stats.sentimentCounts.neutral}
-                </Badge>
-                <Badge variant="outline" className="bg-red-100 text-red-800">
-                  -{stats.sentimentCounts.negative}
-                </Badge>
-              </div>
-              {totalSentiments > 0 && (
-                <div className="flex h-2 rounded-full overflow-hidden bg-gray-200">
-                  <div
-                    className="bg-green-500"
-                    style={{ width: `${(stats.sentimentCounts.positive / totalSentiments) * 100}%` }}
-                  />
-                  <div
-                    className="bg-gray-400"
-                    style={{ width: `${(stats.sentimentCounts.neutral / totalSentiments) * 100}%` }}
-                  />
-                  <div
-                    className="bg-red-500"
-                    style={{ width: `${(stats.sentimentCounts.negative / totalSentiments) * 100}%` }}
-                  />
-                </div>
-              )}
-            </CardContent>
-          </Card>
+      <main className="max-w-[1280px] mx-auto px-6 md:px-10 py-10 space-y-10">
+        {/* KPI grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px rounded-lg overflow-hidden border border-border bg-border">
+          <KPI label="Total Reviews" value={stats.totalReviews} sub={`${stats.analyzedCount} analyzed`} />
+          <KPI
+            label="Avg Sentiment"
+            value={`${stats.avgScore}%`}
+            valueClassName={scoreColor(stats.avgScore)}
+          />
+          <KPI label="Positive" value={stats.sentimentCounts.positive} accent="text-success" />
+          <KPI label="Negative" value={stats.sentimentCounts.negative} accent="text-danger" />
         </div>
 
-        {/* AI Insights */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Sparkles className="text-yellow-500" size={20} />
-              AI Insights
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-700 mb-6 text-lg leading-relaxed">{insights.summary}</p>
+        {/* Sentiment bar */}
+        {totalSent > 0 && (
+          <section className="rounded-lg border border-border bg-bg-elevated p-6">
+            <p className="font-mono text-[10px] uppercase tracking-wider text-fg-muted mb-3">
+              Distribution
+            </p>
+            <div className="flex h-1.5 rounded-full overflow-hidden bg-border">
+              <div
+                className="bg-success"
+                style={{ width: `${(stats.sentimentCounts.positive / totalSent) * 100}%` }}
+              />
+              <div
+                className="bg-fg-muted"
+                style={{ width: `${(stats.sentimentCounts.neutral / totalSent) * 100}%` }}
+              />
+              <div
+                className="bg-danger"
+                style={{ width: `${(stats.sentimentCounts.negative / totalSent) * 100}%` }}
+              />
+            </div>
+            <div className="flex gap-6 mt-4 font-mono text-[11px] text-fg-muted">
+              <span className="flex items-center gap-2">
+                <span className="size-2 rounded-full bg-success" />
+                {stats.sentimentCounts.positive} positive
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="size-2 rounded-full bg-fg-muted" />
+                {stats.sentimentCounts.neutral} neutral
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="size-2 rounded-full bg-danger" />
+                {stats.sentimentCounts.negative} negative
+              </span>
+            </div>
+          </section>
+        )}
 
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-                <h3 className="font-semibold text-green-800 flex items-center gap-2 mb-3">
-                  <TrendingUp size={18} />
+        {/* AI Insights */}
+        <section className="rounded-lg border border-border bg-bg-elevated overflow-hidden">
+          <header className="px-6 py-4 border-b border-border flex items-center gap-2">
+            <Sparkles size={14} className="text-fg-muted" />
+            <p className="font-mono text-[10px] uppercase tracking-wider text-fg-muted">
+              AI Insights
+            </p>
+          </header>
+          <div className="p-6 space-y-6">
+            <p className="text-base text-fg leading-relaxed">{insights.summary}</p>
+
+            <div className="grid md:grid-cols-2 gap-px rounded-md overflow-hidden border border-border bg-border">
+              <div className="bg-bg-elevated p-5">
+                <h3 className="font-mono text-[10px] uppercase tracking-wider text-success mb-3 flex items-center gap-2">
+                  <TrendingUp size={12} />
                   Top Appreciations
                 </h3>
                 {insights.topAppreciations.length > 0 ? (
                   <ul className="space-y-2">
-                    {insights.topAppreciations.map((item, index) => (
-                      <li key={index} className="flex items-start gap-2 text-green-700">
-                        <span className="text-green-500">+</span>
+                    {insights.topAppreciations.map((item, i) => (
+                      <li key={i} className="text-sm text-fg flex gap-2">
+                        <span className="text-fg-subtle font-mono">·</span>
                         {item}
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-green-600 text-sm">No data yet</p>
+                  <p className="text-sm text-fg-subtle">No data yet</p>
                 )}
               </div>
-
-              <div className="bg-red-50 rounded-lg p-4 border border-red-200">
-                <h3 className="font-semibold text-red-800 flex items-center gap-2 mb-3">
-                  <TrendingDown size={18} />
+              <div className="bg-bg-elevated p-5">
+                <h3 className="font-mono text-[10px] uppercase tracking-wider text-danger mb-3 flex items-center gap-2">
+                  <TrendingDown size={12} />
                   Top Concerns
                 </h3>
                 {insights.topConcerns.length > 0 ? (
                   <ul className="space-y-2">
-                    {insights.topConcerns.map((item, index) => (
-                      <li key={index} className="flex items-start gap-2 text-red-700">
-                        <span className="text-red-500">-</span>
+                    {insights.topConcerns.map((item, i) => (
+                      <li key={i} className="text-sm text-fg flex gap-2">
+                        <span className="text-fg-subtle font-mono">·</span>
                         {item}
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-red-600 text-sm">No concerns reported</p>
+                  <p className="text-sm text-fg-subtle">No concerns reported</p>
                 )}
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </section>
 
-        {/* Individual Testimonials */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Individual Feedback ({testimonials.length})</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="all" className="w-full">
-              <TabsList className="mb-4">
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="positive">Positive</TabsTrigger>
-                <TabsTrigger value="neutral">Neutral</TabsTrigger>
-                <TabsTrigger value="negative">Negative</TabsTrigger>
-              </TabsList>
+        {/* Individual feedback */}
+        <section>
+          <header className="mb-5 flex items-end justify-between">
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-wider text-fg-muted">
+                Feedback
+              </p>
+              <h2 className="text-2xl font-medium tracking-tight text-fg mt-1">
+                Individual reviews
+              </h2>
+            </div>
+            <span className="font-mono text-[11px] text-fg-muted">
+              {testimonials.length} total
+            </span>
+          </header>
 
-              {["all", "positive", "neutral", "negative"].map((tab) => (
-                <TabsContent key={tab} value={tab} className="space-y-4">
-                  {testimonials
-                    .filter((t) => tab === "all" || t.sentiment === tab)
-                    .map((testimonial) => (
-                      <div
-                        key={testimonial.id}
-                        className="border rounded-lg p-4 hover:shadow-md transition-shadow"
-                      >
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center gap-3">
-                            <Badge variant="outline" className="gap-1">
-                              {testimonial.type === "video" ? (
-                                <Video size={14} />
-                              ) : (
-                                <FileText size={14} />
-                              )}
-                              {testimonial.type}
-                            </Badge>
-                            <span className="text-sm text-gray-500">{testimonial.email}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {testimonial.score !== null && (
-                              <Badge variant="outline" className={getScoreColor(testimonial.score)}>
-                                {testimonial.score}%
-                              </Badge>
-                            )}
-                            {testimonial.sentiment && (
-                              <Badge
-                                variant="outline"
-                                className={getSentimentColor(testimonial.sentiment)}
-                              >
-                                {testimonial.sentiment}
-                              </Badge>
-                            )}
-                          </div>
+          <Tabs defaultValue="all">
+            <TabsList variant="line">
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="positive">Positive</TabsTrigger>
+              <TabsTrigger value="neutral">Neutral</TabsTrigger>
+              <TabsTrigger value="negative">Negative</TabsTrigger>
+            </TabsList>
+
+            {["all", "positive", "neutral", "negative"].map((tab) => (
+              <TabsContent key={tab} value={tab} className="space-y-3 mt-6">
+                {testimonials
+                  .filter((t) => tab === "all" || t.sentiment === tab)
+                  .map((t) => (
+                    <article
+                      key={t.id}
+                      className="rounded-lg border border-border bg-bg-elevated p-5 transition-colors duration-150 hover:border-border-hover"
+                    >
+                      <header className="flex items-center justify-between mb-3 gap-2">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <Badge>
+                            {t.type === "video" ? <Video size={10} /> : <FileText size={10} />}
+                            {t.type}
+                          </Badge>
+                          <span className="font-mono text-[11px] text-fg-muted truncate">
+                            {t.email}
+                          </span>
                         </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          {t.score !== null && (
+                            <span className={cn("font-mono text-[11px] tabular-nums", scoreColor(t.score))}>
+                              {t.score}%
+                            </span>
+                          )}
+                          {t.sentiment && (
+                            <Badge variant={sentimentVariant(t.sentiment)}>{t.sentiment}</Badge>
+                          )}
+                        </div>
+                      </header>
 
-                        {testimonial.content ? (
-                          <p className="text-gray-700 mb-3">{testimonial.content}</p>
-                        ) : testimonial.type === "video" && testimonial.v_url ? (
-                          <div className="mb-3">
-                            <video
-                              src={testimonial.v_url}
-                              controls
-                              className="w-full max-w-md rounded-lg"
-                            />
-                            {!testimonial.analyzed && (
-                              <p className="text-sm text-yellow-600 mt-2">
-                                Analysis in progress...
-                              </p>
-                            )}
-                          </div>
-                        ) : (
-                          <p className="text-gray-400 italic mb-3">No content available</p>
-                        )}
+                      {t.content ? (
+                        <p className="text-sm text-fg leading-relaxed">{t.content}</p>
+                      ) : t.type === "video" && t.v_url ? (
+                        <div>
+                          <video
+                            src={t.v_url}
+                            controls
+                            className="w-full max-w-md rounded-md border border-border bg-bg"
+                          />
+                          {!t.analyzed && (
+                            <p className="text-xs text-fg-muted mt-2 font-mono">
+                              Analysis in progress…
+                            </p>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-fg-subtle italic">No content available</p>
+                      )}
 
-                        {testimonial.keywords && testimonial.keywords.length > 0 && (
-                          <div className="flex flex-wrap gap-2">
-                            {testimonial.keywords.map((keyword, idx) => (
-                              <Badge key={idx} variant="secondary" className="text-xs">
-                                {keyword}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
+                      {t.keywords && t.keywords.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 mt-4">
+                          {t.keywords.map((k, i) => (
+                            <Badge key={i} variant="outline">
+                              {k}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
 
-                        <Separator className="my-3" />
-                        <p className="text-xs text-gray-400">
-                          {new Date(testimonial.createdAt).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </p>
-                      </div>
-                    ))}
+                      <p className="font-mono text-[10px] text-fg-subtle mt-4 pt-3 border-t border-border">
+                        {new Date(t.createdAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
+                    </article>
+                  ))}
 
-                  {testimonials.filter((t) => tab === "all" || t.sentiment === tab).length === 0 && (
-                    <div className="text-center py-8 text-gray-500">
+                {testimonials.filter((t) => tab === "all" || t.sentiment === tab).length === 0 && (
+                  <div className="rounded-lg border border-dashed border-border bg-bg-elevated/40 p-12 text-center">
+                    <p className="text-sm text-fg-muted">
                       No {tab === "all" ? "" : tab} feedback yet
-                    </div>
-                  )}
-                </TabsContent>
-              ))}
-            </Tabs>
-          </CardContent>
-        </Card>
+                    </p>
+                  </div>
+                )}
+              </TabsContent>
+            ))}
+          </Tabs>
+        </section>
       </main>
     </div>
   );
 }
+
+const KPI = ({
+  label,
+  value,
+  sub,
+  accent,
+  valueClassName,
+}: {
+  label: string;
+  value: string | number;
+  sub?: string;
+  accent?: string;
+  valueClassName?: string;
+}) => (
+  <div className="bg-bg p-6 flex flex-col gap-2">
+    <span className={cn("font-mono text-[10px] uppercase tracking-wider", accent || "text-fg-muted")}>
+      {label}
+    </span>
+    <span className={cn("text-3xl font-medium tracking-tight tabular-nums", valueClassName || "text-fg")}>
+      {value}
+    </span>
+    {sub && <span className="font-mono text-[11px] text-fg-subtle">{sub}</span>}
+  </div>
+);
 
 export default Insights;

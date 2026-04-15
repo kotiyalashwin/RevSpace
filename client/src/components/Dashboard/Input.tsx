@@ -5,6 +5,7 @@ type InputProps = {
   placeholder: string;
   message: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  value?: string;
 };
 
 export default function Input({
@@ -12,17 +13,21 @@ export default function Input({
   placeholder,
   message,
   onChange,
+  value,
 }: InputProps) {
   return (
-    <div className="w-full mb-2 ">
-      <p className="font-semibold">{label}</p>
+    <div className="w-full mb-4 space-y-1.5">
+      <label className="font-mono text-[11px] uppercase tracking-wider text-fg-muted">
+        {label}
+      </label>
       <input
         required
+        value={value}
         onChange={onChange}
-        className="w-full border-2 p-2 border-gray-200 outline-none placeholder:text-sm focus:ring-1"
         placeholder={placeholder}
+        className="flex h-10 w-full rounded-md border border-border bg-bg-elevated px-3 py-2 text-sm text-fg placeholder:text-fg-subtle transition-colors duration-150 hover:border-border-hover focus-visible:outline-none focus-visible:border-fg-muted focus-visible:ring-2 focus-visible:ring-border-hover/50"
       />
-      <p className="text-neutral-400">{message}</p>
+      {message && <p className="text-xs text-fg-subtle">{message}</p>}
     </div>
   );
 }

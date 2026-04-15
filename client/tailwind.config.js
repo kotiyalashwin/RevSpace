@@ -5,10 +5,20 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        default: ["lato"],
+        sans: ['"Geist Variable"', "system-ui", "sans-serif"],
+        mono: ['"Geist Mono Variable"', "ui-monospace", "monospace"],
       },
       colors: {
+        bg: "hsl(var(--bg))",
+        "bg-elevated": "hsl(var(--bg-elevated))",
+        "bg-hover": "hsl(var(--bg-hover))",
+        fg: {
+          DEFAULT: "hsl(var(--fg))",
+          muted: "hsl(var(--fg-muted))",
+          subtle: "hsl(var(--fg-subtle))",
+        },
         border: "hsl(var(--border))",
+        "border-hover": "hsl(var(--border-hover))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
@@ -41,11 +51,19 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        success: "hsl(var(--success))",
+        danger: "hsl(var(--danger))",
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      transitionTimingFunction: {
+        DEFAULT: "cubic-bezier(0.32, 0.72, 0, 1)",
+      },
+      transitionDuration: {
+        DEFAULT: "150ms",
       },
     },
   },

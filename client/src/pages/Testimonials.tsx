@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, MessageSquare } from "lucide-react";
+import { ArrowLeft, ArrowRight, MessageSquareQuote } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PageLoader } from "@/components/ui/loader";
+import { Badge } from "@/components/ui/badge";
 
 const SERVER = import.meta.env.VITE_SERVER;
 
@@ -12,9 +13,7 @@ interface Space {
   spacename: string;
   description: string;
   link: string;
-  _count?: {
-    testimonials: number;
-  };
+  _count?: { testimonials: number };
 }
 
 function Testimonials() {
@@ -23,11 +22,12 @@ function Testimonials() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSpaces = async () => {
+    (async () => {
       try {
-        const response = await axios.get<{ spaces: Space[] }>(`${SERVER}/api/v1/space/spaces`, {
-          withCredentials: true,
-        });
+        const response = await axios.get<{ spaces: Space[] }>(
+          `${SERVER}/api/v1/space/spaces`,
+          { withCredentials: true }
+        );
         setSpaces(response.data.spaces || []);
       } catch {
         toast.error("Failed to load products");
@@ -35,87 +35,88 @@ function Testimonials() {
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchSpaces();
+    })();
   }, [navigate]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
-      </div>
-    );
-  }
+  if (loading) return <PageLoader text="Loading testimonials" />;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center gap-4">
+    <div className="min-h-screen bg-bg text-fg">
+      <header className="sticky top-0 z-20 border-b border-border bg-bg/80 backdrop-blur-md">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-10 h-16 flex items-center gap-4">
           <button
             onClick={() => navigate("/dashboard")}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-1.5 text-fg-muted hover:text-fg hover:bg-bg-elevated rounded-md transition-colors"
           >
-            <ArrowLeft size={24} />
+            <ArrowLeft size={18} />
           </button>
           <div>
-            <h1 className="text-2xl font-bold">Testimonials</h1>
-            <p className="text-gray-500 text-sm">
-              View and embed testimonials for your products
+            <p className="font-mono text-[10px] uppercase tracking-wider text-fg-muted">
+              Embed
             </p>
+            <h1 className="text-base font-medium tracking-tight">Testimonials</h1>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      <main className="max-w-[1280px] mx-auto px-6 md:px-10 py-10">
+        <div className="mb-10 max-w-2xl">
+          <h2 className="text-3xl md:text-4xl font-medium tracking-tight">
+            Pick a space to view & embed
+          </h2>
+          <p className="text-sm text-fg-muted mt-3 leading-relaxed">
+            Browse the testimonials collected for each space and grab embed snippets you can drop into any site.
+          </p>
+        </div>
+
         {spaces.length === 0 ? (
-          <div className="text-center py-16">
-            <MessageSquare className="mx-auto text-gray-300 mb-4" size={64} />
-            <h2 className="text-xl font-medium text-gray-600 mb-2">
-              No products yet
-            </h2>
-            <p className="text-gray-500 mb-4">
-              Create a space in your dashboard to start collecting testimonials
+          <div className="rounded-lg border border-dashed border-border bg-bg-elevated/40 p-16 text-center">
+            <MessageSquareQuote className="mx-auto text-fg-subtle mb-4" size={32} />
+            <h3 className="text-base font-medium text-fg mb-1">No spaces yet</h3>
+            <p className="text-sm text-fg-muted mb-6">
+              Create a space in your dashboard to start collecting testimonials.
             </p>
             <button
               onClick={() => navigate("/dashboard")}
-              className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800"
+              className="inline-flex items-center gap-2 h-9 px-4 rounded-md bg-fg text-bg text-sm font-medium hover:bg-fg/90 transition-colors"
             >
-              Go to Dashboard
+              Go to dashboard
+              <ArrowRight size={14} />
             </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {spaces.map((space) => (
-              <Card
+              <button
                 key={space.id}
-                className="hover:shadow-md transition-shadow cursor-pointer"
                 onClick={() => navigate(`/testimonials/${space.link}`)}
+                className="group text-left rounded-lg border border-border bg-bg-elevated transition-colors duration-150 hover:border-border-hover overflow-hidden"
               >
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span>{space.spacename}</span>
-                    <MessageSquare size={20} className="text-gray-400" />
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+                <div className="p-5 space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="text-base font-medium text-fg tracking-tight">
+                      {space.spacename}
+                    </h3>
+                    <Badge>
+                      {space._count?.testimonials ?? 0}
+                    </Badge>
+                  </div>
                   {space.description && (
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                    <p className="text-sm text-fg-muted line-clamp-2 leading-relaxed">
                       {space.description}
                     </p>
                   )}
-                  <button
-                    className="w-full bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition-colors"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/testimonials/${space.link}`);
-                    }}
-                  >
-                    View Testimonials
-                  </button>
-                </CardContent>
-              </Card>
+                </div>
+                <div className="border-t border-border px-5 py-3 flex items-center justify-between">
+                  <span className="font-mono text-[11px] text-fg-subtle">
+                    /{space.link}
+                  </span>
+                  <ArrowRight
+                    size={14}
+                    className="text-fg-muted group-hover:text-fg group-hover:translate-x-0.5 transition-all"
+                  />
+                </div>
+              </button>
             ))}
           </div>
         )}

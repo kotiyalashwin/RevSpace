@@ -1,9 +1,8 @@
 import axios from "axios";
-
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import * as motion from "motion/react-client";
-import { LogOut, X } from "lucide-react";
+import { LayoutGrid, FolderOpen, MessageSquareQuote, LogOut, X, type LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const SERVER = import.meta.env.VITE_SERVER;
 
@@ -20,66 +19,69 @@ const MobSideBar = ({ current, setCurrent, setSideBar }: MobSideBarProps) => {
     const response = await axios.post(`${SERVER}/api/v1/user/logout`, null, {
       withCredentials: true,
     });
-
-    const data = await response.data;
     // @ts-ignore
-    toast.success(data.message);
+    toast.success(response.data.message);
     navigate("/");
   };
 
+  const navItem = (
+    key: string,
+    label: string,
+    Icon: LucideIcon,
+    onClick: () => void,
+    isActive: boolean
+  ) => (
+    <button
+      key={key}
+      onClick={onClick}
+      className={cn(
+        "flex w-full items-center gap-3 rounded-md px-3 h-10 text-sm transition-colors duration-150",
+        isActive ? "bg-bg-elevated text-fg" : "text-fg-muted hover:bg-bg-elevated hover:text-fg"
+      )}
+    >
+      <Icon size={16} />
+      <span>{label}</span>
+    </button>
+  );
+
   return (
-    <div className=" w-40 h-[50%] flex flex-col space-y-8 p-8">
-      <motion.div className="flex  justify-center" whileHover={{ rotate: 90 }}>
-        <button onClick={() => setSideBar(false)}>
-          <X size={40} />
-        </button>
-      </motion.div>
-      <nav className="space-y-8 flex flex-col items-center">
+    <div className="w-64 h-screen bg-bg border-r border-border flex flex-col">
+      <div className="h-16 px-4 flex items-center justify-between border-b border-border">
+        <div className="flex items-center gap-2">
+          <div className="size-6 rounded-md bg-fg flex items-center justify-center">
+            <span className="text-bg text-xs font-bold">R</span>
+          </div>
+          <span className="font-medium text-fg">RevSpace</span>
+        </div>
         <button
-          onClick={() => {
-            setCurrent("dashboard");
-            setSideBar(false);
-          }}
-          className={`${
-            current === "dashboard"
-              ? "text-white bg-black"
-              : "bg-white  hover:bg-black hover:text-white"
-          } flex text-lg lg:text-lg items-center space-x-3 p-3 rounded-lg transition-all  `}
+          onClick={() => setSideBar(false)}
+          className="text-fg-muted hover:text-fg transition-colors"
         >
-          Dashboard
+          <X size={20} />
         </button>
-        <button
-          onClick={() => {
-            setCurrent("spaces");
-            setSideBar(false);
-          }}
-          className={`${
-            current === "spaces"
-              ? "bg-black text-white"
-              : "hover:text-white hover:bg-black"
-          } flex text-lg lg:text-lg items-center space-x-3 py-3 px-6 rounded-lg transition-all   `}
-        >
-          Spaces
-        </button>
-        <button
-          onClick={() => {
-            setSideBar(false);
-            navigate("/testimonials");
-          }}
-          className={`flex text-lg lg:text-lg items-center space-x-3 p-3 rounded-lg transition-all hover:text-white hover:bg-black`}
-        >
-          Testimonials
-        </button>
+      </div>
+
+      <div className="px-4 pt-5 pb-2">
+        <p className="font-mono text-[10px] uppercase tracking-wider text-fg-subtle">
+          Workspace
+        </p>
+      </div>
+
+      <nav className="px-2 flex flex-col gap-0.5 flex-1">
+        {navItem("dashboard", "Overview", LayoutGrid, () => { setCurrent("dashboard"); setSideBar(false); }, current === "dashboard")}
+        {navItem("spaces", "Spaces", FolderOpen, () => { setCurrent("spaces"); setSideBar(false); }, current === "spaces")}
+        {navItem("testimonials", "Testimonials", MessageSquareQuote, () => { setSideBar(false); navigate("/testimonials"); }, false)}
+      </nav>
+
+      <div className="border-t border-border p-2">
         <button
           onClick={handleLogout}
-          className={`flex text-lg lg:text-lg items-center space-x-3 p-3 rounded-lg transition-all hover:text-white hover:bg-black`}
+          className="flex w-full items-center gap-3 rounded-md px-3 h-10 text-sm text-fg-muted hover:bg-bg-elevated hover:text-fg transition-colors"
         >
-          LogOut
-          <div className="ml-2">
-            <LogOut />
-          </div>
+          <LogOut size={16} />
+          <span>Log out</span>
         </button>
-      </nav>
+      </div>
     </div>
   );
 };

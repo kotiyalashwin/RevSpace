@@ -1,211 +1,141 @@
-import { BookPlus, BarChart3, MessageSquare } from "lucide-react";
+import { Plus, BarChart3, MessageSquareQuote, ArrowUpRight, FolderOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import * as motion from "motion/react-client";
+import { Badge } from "@/components/ui/badge";
 
-type SpaceBoxProps = {
-  setIsOpen: (v: boolean) => void;
-  spaces: spaces[];
-};
-
-type spaces = {
+type Space = {
   spacename: string;
   description: string;
   link: string;
+  _count?: { testimonials: number };
+};
+
+type SpaceBoxProps = {
+  setIsOpen: (v: boolean) => void;
+  spaces: Space[];
 };
 
 const variants = {
-  hidden: {
-    opacity: 0,
-  },
-
-  visible: {
-    opacity: 100,
-  },
+  hidden: { opacity: 0, y: 6 },
+  visible: { opacity: 1, y: 0 },
 };
 
 function SpaceBox({ setIsOpen, spaces }: SpaceBoxProps) {
   const navigate = useNavigate();
 
   return (
-    <motion.div
+    <motion.section
       variants={variants}
       initial="hidden"
       animate="visible"
-      transition={{ duration: 1, ease: "easeIn" }}
-      className="rounded-xl p-6 mt-4 w-full lg:w-full bg-white border-2 h-full  "
-      style={{
-        backdropFilter: "blur(12px)",
-      }}
+      transition={{ duration: 0.4, delay: 0.1, ease: [0.32, 0.72, 0, 1] }}
+      className="mt-10"
     >
-      <header className="flex justify-between ">
-        <h2 className="text-xl md:text-5xl font-semibold text-black mb-4">
-          Spaces
-        </h2>
-        <button className="text-black mb-4" onClick={() => setIsOpen(true)}>
-          <BookPlus size={28} />
+      <header className="flex items-end justify-between mb-5">
+        <div className="space-y-1">
+          <p className="font-mono text-[11px] uppercase tracking-wider text-fg-muted">
+            Spaces
+          </p>
+          <h2 className="text-2xl font-medium tracking-tight text-fg">
+            Your collection forms
+          </h2>
+        </div>
+        <button
+          onClick={() => setIsOpen(true)}
+          className="inline-flex items-center gap-2 h-9 px-4 rounded-md bg-fg text-bg text-sm font-medium hover:bg-fg/90 transition-colors"
+        >
+          <Plus size={16} />
+          New space
         </button>
       </header>
 
-      <div className="w-full h-[500px] bg-gray-50 rounded-lg p-4">
-        <div className="h-full overflow-y-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 content-start">
-            {spaces && spaces.length > 0 ? (
-              spaces?.map((space) => {
-                return (
-                  <SpaceCard
-                    navigate={navigate}
-                    spacename={space.spacename}
-                    description={space.description}
-                    link={space.link}
-                  />
-                );
-              })
-            ) : (
-              <div className="w-full text-neutral-500 flex text-xl text-center items-center justify-center">
-                No Spaces Found.Create One
-              </div>
-            )}
-          </div>
+      {spaces && spaces.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {spaces.map((space) => (
+            <SpaceCard
+              key={space.link}
+              navigate={navigate}
+              spacename={space.spacename}
+              description={space.description}
+              link={space.link}
+              count={space._count?.testimonials || 0}
+            />
+          ))}
         </div>
-      </div>
-
-      {/* <div className="flex md:grid lg:flex-row flex-col h-[400px] sm:h-auto overflow-x-auto overflow-y-auto md:w-[70%]">
-        {spaces && spaces.length > 0 ? (
-          spaces?.map((space) => {
-            return (
-              <SpaceCard
-                navigate={navigate}
-                spacename={space.spacename}
-                description={space.description}
-                link={space.link}
-              />
-            );
-          })
-        ) : (
-          <div className="w-full text-neutral-500 flex text-xl text-center items-center justify-center">
-            No Spaces Found.Create One
-          </div>
-        )}
-      </div> */}
-    </motion.div>
+      ) : (
+        <EmptyState onCreate={() => setIsOpen(true)} />
+      )}
+    </motion.section>
   );
-}
-
-interface spaceCardProps extends spaces {
-  navigate: (path: string) => void;
 }
 
 const SpaceCard = ({
   spacename,
   description,
   link,
+  count,
   navigate,
-}: spaceCardProps) => (
-  <div className="bg-white rounded-lg shadow-md p-4 m-2 w-64 border-2">
-    <h2 className="text-xl font-bold mb-2">{spacename}</h2>
-    {description && <p className="text-gray-600 mb-4">{description}</p>}
-    <div className="flex gap-2">
-      <button
-        onClick={() => navigate(`/testimonial/${link}`)}
-        className="bg-black text-white font-bold py-2 px-4 rounded"
-      >
-        View Form
-      </button>
-      <button
-        onClick={() => navigate(`/insights/${link}`)}
-        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded flex items-center"
-      >
-        <BarChart3 size={18} />
-      </button>
-      <button
-        onClick={() => navigate(`/testimonials/${link}`)}
-        className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-3 rounded flex items-center"
-      >
-        <MessageSquare size={18} />
-      </button>
+}: Space & { count: number; navigate: (p: string) => void }) => (
+  <div className="group rounded-lg border border-border bg-bg-elevated transition-colors duration-150 hover:border-border-hover overflow-hidden">
+    <div className="p-5 space-y-3">
+      <div className="flex items-start justify-between gap-2">
+        <h3 className="text-base font-medium text-fg tracking-tight truncate">
+          {spacename}
+        </h3>
+        <Badge>{count} {count === 1 ? "review" : "reviews"}</Badge>
+      </div>
+      {description && (
+        <p className="text-sm text-fg-muted line-clamp-2 leading-relaxed">
+          {description}
+        </p>
+      )}
+    </div>
+    <div className="border-t border-border px-5 py-3 flex items-center justify-between">
+      <p className="font-mono text-[11px] text-fg-subtle truncate">/{link}</p>
+      <div className="flex items-center gap-1">
+        <button
+          onClick={() => navigate(`/insights/${link}`)}
+          title="Insights"
+          className="p-1.5 text-fg-muted hover:text-fg hover:bg-bg-hover rounded transition-colors"
+        >
+          <BarChart3 size={14} />
+        </button>
+        <button
+          onClick={() => navigate(`/testimonials/${link}`)}
+          title="Testimonials"
+          className="p-1.5 text-fg-muted hover:text-fg hover:bg-bg-hover rounded transition-colors"
+        >
+          <MessageSquareQuote size={14} />
+        </button>
+        <button
+          onClick={() => navigate(`/testimonial/${link}`)}
+          title="Open form"
+          className="p-1.5 text-fg-muted hover:text-fg hover:bg-bg-hover rounded transition-colors"
+        >
+          <ArrowUpRight size={14} />
+        </button>
+      </div>
     </div>
   </div>
 );
-{
-  /* Form
-          <form  className="space-y-4">
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                placeholder="Enter name"
-                required
-              />
-            </div>
 
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                placeholder="Enter email"
-                required
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="title"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Title
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                placeholder="Enter title"
-                required
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="description"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Description
-              </label>
-              <input
-                type="text"
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                placeholder="Enter description"
-                required
-              />
-            </div>
-
-            {/* Footer */
-}
+const EmptyState = ({ onCreate }: { onCreate: () => void }) => (
+  <div className="rounded-lg border border-dashed border-border bg-bg-elevated/40 p-16 flex flex-col items-center justify-center text-center">
+    <div className="size-12 rounded-full bg-bg-elevated border border-border flex items-center justify-center mb-4">
+      <FolderOpen size={20} className="text-fg-muted" />
+    </div>
+    <h3 className="text-base font-medium text-fg mb-1">No spaces yet</h3>
+    <p className="text-sm text-fg-muted mb-6 max-w-sm">
+      Create your first space to start collecting testimonials from your customers.
+    </p>
+    <button
+      onClick={onCreate}
+      className="inline-flex items-center gap-2 h-9 px-4 rounded-md bg-fg text-bg text-sm font-medium hover:bg-fg/90 transition-colors"
+    >
+      <Plus size={16} />
+      Create your first space
+    </button>
+  </div>
+);
 
 export default SpaceBox;

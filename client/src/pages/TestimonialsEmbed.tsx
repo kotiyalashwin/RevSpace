@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Video, FileText } from "lucide-react";
+import { ArrowLeft, Video, FileText, MessageSquareQuote } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Badge } from "@/components/ui/badge";
 import TestimonialCard from "@/components/Testimonial/TestimonialCard";
 import EmbedModal from "@/components/Testimonial/EmbedModal";
 import { TestimonialData } from "@/utils/embedGenerator";
+import { PageLoader } from "@/components/ui/loader";
 
 const SERVER = import.meta.env.VITE_SERVER;
 
@@ -20,12 +20,7 @@ interface Testimonial {
 }
 
 interface SpaceData {
-  space: {
-    id: number;
-    name: string;
-    description: string;
-    link: string;
-  };
+  space: { id: number; name: string; description: string; link: string };
   testimonials: Testimonial[];
 }
 
@@ -39,7 +34,7 @@ function TestimonialsEmbed() {
     useState<TestimonialData | null>(null);
 
   useEffect(() => {
-    const fetchTestimonials = async () => {
+    (async () => {
       try {
         const response = await axios.get<SpaceData>(
           `${SERVER}/api/v1/testimonial/insights/${link}`,
@@ -52,9 +47,7 @@ function TestimonialsEmbed() {
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchTestimonials();
+    })();
   }, [link, navigate]);
 
   const handleGetEmbed = (testimonial: Testimonial) => {
@@ -68,65 +61,48 @@ function TestimonialsEmbed() {
     setModalOpen(true);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
-      </div>
-    );
-  }
-
-  if (!data) {
-    return null;
-  }
+  if (loading) return <PageLoader text="Loading testimonials" />;
+  if (!data) return null;
 
   const { space, testimonials } = data;
   const videoCount = testimonials.filter((t) => t.type === "video").length;
   const textCount = testimonials.filter((t) => t.type === "text").length;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center gap-4">
+    <div className="min-h-screen bg-bg text-fg">
+      <header className="sticky top-0 z-20 border-b border-border bg-bg/80 backdrop-blur-md">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-10 h-16 flex items-center gap-4">
           <button
             onClick={() => navigate("/testimonials")}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-1.5 text-fg-muted hover:text-fg hover:bg-bg-elevated rounded-md transition-colors"
           >
-            <ArrowLeft size={24} />
+            <ArrowLeft size={18} />
           </button>
-          <div>
-            <h1 className="text-2xl font-bold">{space.name}</h1>
-            <p className="text-gray-500 text-sm">{space.description}</p>
+          <div className="min-w-0">
+            <p className="font-mono text-[10px] uppercase tracking-wider text-fg-muted">
+              {space.link}
+            </p>
+            <h1 className="text-base font-medium tracking-tight truncate">
+              {space.name}
+            </h1>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Stats Bar */}
-        <div className="flex items-center gap-4 mb-6">
-          <Badge variant="outline" className="text-sm py-1 px-3">
-            Total: {testimonials.length}
-          </Badge>
-          <Badge variant="outline" className="text-sm py-1 px-3 gap-1">
-            <Video size={14} />
-            {videoCount}
-          </Badge>
-          <Badge variant="outline" className="text-sm py-1 px-3 gap-1">
-            <FileText size={14} />
-            {textCount}
-          </Badge>
+      <main className="max-w-[1280px] mx-auto px-6 md:px-10 py-10">
+        {/* Stats strip */}
+        <div className="flex items-center gap-px rounded-lg overflow-hidden border border-border bg-border mb-8 max-w-md">
+          <Stat label="Total" value={testimonials.length} />
+          <Stat label="Video" value={videoCount} icon={<Video size={11} />} />
+          <Stat label="Text" value={textCount} icon={<FileText size={11} />} />
         </div>
 
-        {/* Testimonials Grid */}
         {testimonials.length === 0 ? (
-          <div className="text-center py-16">
-            <FileText className="mx-auto text-gray-300 mb-4" size={64} />
-            <h2 className="text-xl font-medium text-gray-600 mb-2">
-              No testimonials yet
-            </h2>
-            <p className="text-gray-500">
-              Share your testimonial form link to start collecting feedback
+          <div className="rounded-lg border border-dashed border-border bg-bg-elevated/40 p-16 text-center">
+            <MessageSquareQuote className="mx-auto text-fg-subtle mb-4" size={32} />
+            <h3 className="text-base font-medium text-fg mb-1">No testimonials yet</h3>
+            <p className="text-sm text-fg-muted">
+              Share your form link to start collecting feedback.
             </p>
           </div>
         ) : (
@@ -142,7 +118,6 @@ function TestimonialsEmbed() {
         )}
       </main>
 
-      {/* Embed Modal */}
       <EmbedModal
         open={modalOpen}
         onOpenChange={setModalOpen}
@@ -151,5 +126,23 @@ function TestimonialsEmbed() {
     </div>
   );
 }
+
+const Stat = ({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: number;
+  icon?: React.ReactNode;
+}) => (
+  <div className="flex-1 bg-bg p-4 flex flex-col gap-1">
+    <span className="font-mono text-[10px] uppercase tracking-wider text-fg-muted flex items-center gap-1.5">
+      {icon}
+      {label}
+    </span>
+    <span className="text-xl font-medium tabular-nums">{value}</span>
+  </div>
+);
 
 export default TestimonialsEmbed;

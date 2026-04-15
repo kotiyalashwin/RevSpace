@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { Pencil, UserCircle, Video, X, Send, Loader2 } from "lucide-react";
+import { Pencil, Video, X, Send, Loader2, Check, ArrowLeft } from "lucide-react";
 import VideoRecorder from "../components/Dashboard/VideoRecorder";
 import { PageLoader } from "../components/ui/loader";
 
 const SERVER = import.meta.env.VITE_SERVER;
 
-type space = {
+type Space = {
   header: string;
   message: string;
   wantText: boolean;
@@ -18,7 +18,7 @@ type space = {
 
 function Testimonial() {
   const { link } = useParams<{ link: string }>();
-  const [space, setSpace] = useState<space>();
+  const [space, setSpace] = useState<Space>();
   const [loading, setLoading] = useState(true);
   const [videoBlob, setVideoBlob] = useState<Blob>();
   const [mode, setMode] = useState<"select" | "video" | "text">("select");
@@ -27,279 +27,283 @@ function Testimonial() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const getSpaceDetails = async () => {
-    try {
-      const url = `${SERVER}/api/v1/space/${link}/details`;
-      const response = await axios.get<{ success: boolean; spaceDetails: space }>(url, {
-        withCredentials: true,
-      });
-
-      if (response.data.success) {
-        setSpace(response.data.spaceDetails);
-      } else {
-        toast.error("Unable to fetch Space details");
-      }
-    } catch {
-      toast.error("Unable to fetch Space details");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    getSpaceDetails();
-  }, []);
+    (async () => {
+      try {
+        const response = await axios.get<{ success: boolean; spaceDetails: Space }>(
+          `${SERVER}/api/v1/space/${link}/details`,
+          { withCredentials: true }
+        );
+        if (response.data.success) setSpace(response.data.spaceDetails);
+        else toast.error("Unable to fetch space");
+      } catch {
+        toast.error("Unable to fetch space");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [link]);
 
   const handleSubmitVideo = async () => {
-    if (!uploader || !uploader.includes("@")) {
-      toast.error("Please enter a valid email");
-      return;
-    }
-    if (!videoBlob) {
-      toast.error("Please record a video first");
-      return;
-    }
+    if (!uploader || !uploader.includes("@")) return toast.error("Enter a valid email");
+    if (!videoBlob) return toast.error("Record a video first");
 
     setSubmitting(true);
     const formData = new FormData();
     formData.append("video", videoBlob);
-
     try {
-      const url = `${SERVER}/api/v1/testimonial/videoupload/${link}/${uploader}`;
-
-      const response = await axios.post<{ success: boolean }>(url, formData, {
-        withCredentials: true,
-      });
-
-      if (response.data.success) {
-        toast.success("Thank you for your feedback!");
-        setSubmitted(true);
-      } else {
-        toast.error("Unable to upload testimonial");
-      }
-    } catch (error) {
-      console.error("Error sending video:", error);
-      toast.error("Failed to submit testimonial");
+      const response = await axios.post<{ success: boolean }>(
+        `${SERVER}/api/v1/testimonial/videoupload/${link}/${uploader}`,
+        formData,
+        { withCredentials: true }
+      );
+      if (response.data.success) setSubmitted(true);
+      else toast.error("Upload failed");
+    } catch {
+      toast.error("Failed to submit");
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleSubmitText = async () => {
-    if (!uploader || !uploader.includes("@")) {
-      toast.error("Please enter a valid email");
-      return;
-    }
-    if (!textReview.trim() || textReview.length < 10) {
-      toast.error("Please write at least 10 characters");
-      return;
-    }
+    if (!uploader || !uploader.includes("@")) return toast.error("Enter a valid email");
+    if (!textReview.trim() || textReview.length < 10)
+      return toast.error("Write at least 10 characters");
 
     setSubmitting(true);
-
     try {
-      const url = `${SERVER}/api/v1/testimonial/textupload/${link}`;
-
       const response = await axios.post<{ success: boolean }>(
-        url,
+        `${SERVER}/api/v1/testimonial/textupload/${link}`,
         { email: uploader, text: textReview },
         { withCredentials: true }
       );
-
-      if (response.data.success) {
-        toast.success("Thank you for your feedback!");
-        setSubmitted(true);
-      } else {
-        toast.error("Unable to submit feedback");
-      }
-    } catch (error) {
-      console.error("Error submitting text:", error);
-      toast.error("Failed to submit feedback");
+      if (response.data.success) setSubmitted(true);
+      else toast.error("Submit failed");
+    } catch {
+      toast.error("Failed to submit");
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (loading) {
-    return <PageLoader text="Loading form..." />;
-  }
+  if (loading) return <PageLoader text="Loading form" />;
+
+  const inputCls =
+    "h-11 w-full rounded-md border border-border bg-bg-elevated px-3 text-sm text-fg placeholder:text-fg-subtle transition-colors hover:border-border-hover focus-visible:outline-none focus-visible:border-fg-muted focus-visible:ring-2 focus-visible:ring-border-hover/50";
 
   if (submitted) {
     return (
-      <div className="flex flex-col min-h-screen items-center justify-center p-4 bg-gradient-to-b from-green-50 to-white">
-        <div className="text-center">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
+      <div className="min-h-screen bg-bg text-fg flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <div className="size-14 rounded-full bg-success/10 border border-success/30 flex items-center justify-center mx-auto mb-6">
+            <Check className="text-success" size={24} />
           </div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Thank You!</h1>
-          <p className="text-gray-600 mb-6">Your feedback has been submitted successfully.</p>
-          <p className="text-sm text-gray-400">You can close this page now.</p>
+          <p className="font-mono text-[11px] uppercase tracking-wider text-success mb-3">
+            Submitted
+          </p>
+          <h1 className="text-3xl font-medium tracking-tight mb-3">Thank you</h1>
+          <p className="text-sm text-fg-muted leading-relaxed mb-8">
+            Your feedback was submitted successfully. You can close this page now.
+          </p>
+          <p className="font-mono text-[10px] uppercase tracking-wider text-fg-subtle">
+            Powered by RevSpace
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col min-h-screen items-center p-4 bg-gray-50">
-      <div className="w-full max-w-2xl">
+    <div className="min-h-screen bg-bg text-fg">
+      <div className="max-w-2xl mx-auto px-4 py-12 md:py-20">
         {space && (
-          <div className="bg-white p-6 md:p-8 flex flex-col items-center rounded-xl shadow-lg">
+          <div className="rounded-lg border border-border bg-bg-elevated overflow-hidden">
             {/* Header */}
-            <div className="text-cyan-800 mb-4">
-              <UserCircle size={60} />
-            </div>
-            <header className="text-center w-full mb-6">
-              <h1 className="text-3xl lg:text-5xl text-neutral-700 font-bold mb-3">
+            <div className="px-8 pt-10 pb-6 text-center border-b border-border">
+              <div className="size-10 rounded-full bg-bg border border-border flex items-center justify-center mx-auto mb-6">
+                <span className="text-fg text-sm font-medium">R</span>
+              </div>
+              <p className="font-mono text-[11px] uppercase tracking-wider text-fg-muted mb-3">
+                Share your experience
+              </p>
+              <h1 className="text-3xl md:text-4xl font-medium tracking-tight leading-tight mb-3">
                 {space.header}
               </h1>
-              <p className="text-base lg:text-lg text-neutral-500">
+              <p className="text-sm text-fg-muted leading-relaxed max-w-md mx-auto">
                 {space.message}
               </p>
-            </header>
+            </div>
 
-            {/* Questions */}
-            {space.questions.length > 0 && (
-              <div className="w-full mb-6">
-                <header className="text-neutral-600 font-semibold mb-2">
-                  Try to answer these questions:
-                </header>
-                <div className="bg-gray-100 rounded-lg p-4">
-                  {space.questions.map((question, i) => {
-                    const letter = String.fromCharCode(97 + i);
-                    return (
-                      <p key={i} className="text-base p-2 text-slate-700">
-                        {`${letter}) `}
-                        {question}
-                      </p>
-                    );
-                  })}
+            {/* Body */}
+            <div className="px-8 py-8 space-y-8">
+              {/* Questions */}
+              {space.questions.length > 0 && mode === "select" && (
+                <div>
+                  <p className="font-mono text-[11px] uppercase tracking-wider text-fg-muted mb-3">
+                    A few prompts
+                  </p>
+                  <ul className="space-y-2">
+                    {space.questions.map((q, i) => (
+                      <li key={i} className="text-sm text-fg-muted leading-relaxed flex gap-3">
+                        <span className="font-mono text-fg-subtle">
+                          {String.fromCharCode(97 + i)}.
+                        </span>
+                        {q}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Mode Selection */}
-            {mode === "select" && (
-              <div className="flex flex-col sm:flex-row gap-4 w-full">
-                {space.wantVideo && (
-                  <button
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 flex items-center justify-center text-white px-4 py-4 rounded-lg transition-colors"
-                    onClick={() => setMode("video")}
-                  >
-                    <Video className="mr-3" />
-                    <span>Record Video</span>
-                  </button>
-                )}
-                {space.wantText && (
-                  <button
-                    className="flex-1 bg-purple-600 hover:bg-purple-700 flex items-center justify-center text-white px-4 py-4 rounded-lg transition-colors"
-                    onClick={() => setMode("text")}
-                  >
-                    <Pencil className="mr-3" />
-                    <span>Write Review</span>
-                  </button>
-                )}
-              </div>
-            )}
-
-            {/* Video Recording Mode */}
-            {mode === "video" && (
-              <div className="w-full">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-semibold text-gray-700">Record Your Testimonial</h3>
-                  <button
-                    onClick={() => {
-                      setMode("select");
-                      setVideoBlob(undefined);
-                    }}
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    <X size={24} />
-                  </button>
+              {/* Mode Selection */}
+              {mode === "select" && (
+                <div className="space-y-2">
+                  {space.wantVideo && (
+                    <button
+                      onClick={() => setMode("video")}
+                      className="w-full flex items-center gap-3 px-4 h-12 rounded-md border border-border bg-bg hover:border-border-hover hover:bg-bg-hover transition-colors text-left group"
+                    >
+                      <div className="size-8 rounded-md bg-bg-elevated border border-border flex items-center justify-center">
+                        <Video size={14} className="text-fg-muted group-hover:text-fg" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm text-fg font-medium">Record a video</p>
+                        <p className="font-mono text-[10px] uppercase tracking-wider text-fg-subtle">
+                          Camera + microphone
+                        </p>
+                      </div>
+                      <span className="font-mono text-fg-subtle group-hover:text-fg">→</span>
+                    </button>
+                  )}
+                  {space.wantText && (
+                    <button
+                      onClick={() => setMode("text")}
+                      className="w-full flex items-center gap-3 px-4 h-12 rounded-md border border-border bg-bg hover:border-border-hover hover:bg-bg-hover transition-colors text-left group"
+                    >
+                      <div className="size-8 rounded-md bg-bg-elevated border border-border flex items-center justify-center">
+                        <Pencil size={14} className="text-fg-muted group-hover:text-fg" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm text-fg font-medium">Write a review</p>
+                        <p className="font-mono text-[10px] uppercase tracking-wider text-fg-subtle">
+                          Quick and easy
+                        </p>
+                      </div>
+                      <span className="font-mono text-fg-subtle group-hover:text-fg">→</span>
+                    </button>
+                  )}
                 </div>
-                <VideoRecorder setVideoBlob={setVideoBlob} />
+              )}
 
-                <div className="mt-6 space-y-4">
-                  <input
-                    type="email"
-                    placeholder="Enter your email (required)"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                    value={uploader}
-                    onChange={(e) => setUploader(e.target.value)}
-                  />
-                  <button
-                    className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
-                    onClick={handleSubmitVideo}
-                    disabled={submitting || !videoBlob}
-                  >
-                    {submitting ? (
-                      <Loader2 className="animate-spin mr-2" size={20} />
-                    ) : (
-                      <Send className="mr-2" size={20} />
-                    )}
-                    {submitting ? "Submitting..." : "Submit Video Testimonial"}
-                  </button>
+              {/* Video mode */}
+              {mode === "video" && (
+                <div className="space-y-5">
+                  <ModeHeader title="Video testimonial" onBack={() => { setMode("select"); setVideoBlob(undefined); }} />
+                  <VideoRecorder setVideoBlob={setVideoBlob} />
+
+                  <div className="space-y-3 pt-2">
+                    <div className="space-y-1.5">
+                      <label className="font-mono text-[11px] uppercase tracking-wider text-fg-muted">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="you@email.com"
+                        className={inputCls}
+                        value={uploader}
+                        onChange={(e) => setUploader(e.target.value)}
+                      />
+                    </div>
+                    <button
+                      onClick={handleSubmitVideo}
+                      disabled={submitting || !videoBlob}
+                      className="w-full h-11 inline-flex items-center justify-center gap-2 rounded-md bg-fg text-bg text-sm font-medium hover:bg-fg/90 transition-colors disabled:opacity-50"
+                    >
+                      {submitting ? <Loader2 className="animate-spin" size={14} /> : <Send size={14} />}
+                      {submitting ? "Submitting" : "Submit testimonial"}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Text Review Mode */}
-            {mode === "text" && (
-              <div className="w-full">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-semibold text-gray-700">Write Your Review</h3>
+              {/* Text mode */}
+              {mode === "text" && (
+                <div className="space-y-5">
+                  <ModeHeader title="Written review" onBack={() => { setMode("select"); setTextReview(""); }} />
+
+                  <div className="space-y-1.5">
+                    <label className="font-mono text-[11px] uppercase tracking-wider text-fg-muted">
+                      Your review
+                    </label>
+                    <textarea
+                      placeholder="What did you like? What could we improve?"
+                      className="w-full min-h-[160px] rounded-md border border-border bg-bg-elevated px-3 py-3 text-sm text-fg placeholder:text-fg-subtle resize-none transition-colors hover:border-border-hover focus-visible:outline-none focus-visible:border-fg-muted focus-visible:ring-2 focus-visible:ring-border-hover/50 leading-relaxed"
+                      value={textReview}
+                      onChange={(e) => setTextReview(e.target.value)}
+                    />
+                    <p className="font-mono text-[10px] uppercase tracking-wider text-fg-subtle">
+                      {textReview.length} chars{" "}
+                      {textReview.length < 10 && "· min 10"}
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="font-mono text-[11px] uppercase tracking-wider text-fg-muted">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="you@email.com"
+                      className={inputCls}
+                      value={uploader}
+                      onChange={(e) => setUploader(e.target.value)}
+                    />
+                  </div>
+
                   <button
-                    onClick={() => {
-                      setMode("select");
-                      setTextReview("");
-                    }}
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    <X size={24} />
-                  </button>
-                </div>
-
-                <textarea
-                  placeholder="Share your experience... What did you like? What could be improved?"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none min-h-[150px] resize-none"
-                  value={textReview}
-                  onChange={(e) => setTextReview(e.target.value)}
-                />
-                <p className="text-sm text-gray-400 mt-1 mb-4">
-                  {textReview.length} characters {textReview.length < 10 && "(minimum 10)"}
-                </p>
-
-                <div className="space-y-4">
-                  <input
-                    type="email"
-                    placeholder="Enter your email (required)"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
-                    value={uploader}
-                    onChange={(e) => setUploader(e.target.value)}
-                  />
-                  <button
-                    className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
                     onClick={handleSubmitText}
                     disabled={submitting || textReview.length < 10}
+                    className="w-full h-11 inline-flex items-center justify-center gap-2 rounded-md bg-fg text-bg text-sm font-medium hover:bg-fg/90 transition-colors disabled:opacity-50"
                   >
-                    {submitting ? (
-                      <Loader2 className="animate-spin mr-2" size={20} />
-                    ) : (
-                      <Send className="mr-2" size={20} />
-                    )}
-                    {submitting ? "Analyzing & Submitting..." : "Submit Written Review"}
+                    {submitting ? <Loader2 className="animate-spin" size={14} /> : <Send size={14} />}
+                    {submitting ? "Submitting" : "Submit review"}
                   </button>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
-            <p className="text-neutral-400 text-sm mt-6">Powered by RevSpace</p>
+            {/* Footer */}
+            <div className="border-t border-border px-8 py-4 text-center">
+              <p className="font-mono text-[10px] uppercase tracking-wider text-fg-subtle">
+                Powered by RevSpace
+              </p>
+            </div>
           </div>
         )}
       </div>
     </div>
   );
 }
+
+const ModeHeader = ({ title, onBack }: { title: string; onBack: () => void }) => (
+  <div className="flex items-center gap-3 pb-4 border-b border-border">
+    <button
+      onClick={onBack}
+      className="p-1.5 text-fg-muted hover:text-fg hover:bg-bg rounded-md transition-colors"
+    >
+      <ArrowLeft size={14} />
+    </button>
+    <p className="font-mono text-[11px] uppercase tracking-wider text-fg-muted flex-1">
+      {title}
+    </p>
+    <button
+      onClick={onBack}
+      className="p-1.5 text-fg-muted hover:text-fg hover:bg-bg rounded-md transition-colors"
+    >
+      <X size={14} />
+    </button>
+  </div>
+);
 
 export default Testimonial;
